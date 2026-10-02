@@ -106,3 +106,21 @@ def test_remover_medida_com_e_sem_aspas():
          "\tmeasure 'Com Espaço' = 1\n\t\tlineageTag: b\n\n\tmeasure Fica = 2\n")
     s = r._remover_medida(r._remover_medida(t, "Taxa(%)"), "Com Espaço")
     assert s == "\tmeasure Fica = 2\n"
+
+
+def test_adicionar_rls_um_papel_por_empresa(tmp_path):
+    sm = tmp_path / "PainelIdeias.SemanticModel" / "definition"
+    (sm / "roles").mkdir(parents=True)
+    (sm / "roles" / "Antigo.tmdl").write_text("role Antigo\n", encoding="utf-8")
+    (sm / "model.tmdl").write_text("model Model\n\nref table A\nref role Antigo\n\nref cultureInfo pt-BR\n",
+                                   encoding="utf-8")
+    empresas = [("Litoral Embalagens", "Litoral"), ("Jatobá Serviços", "Jatobá")]
+    r.adicionar_rls(tmp_path, empresas)
+    r.adicionar_rls(tmp_path, empresas)
+    model = (sm / "model.tmdl").read_text(encoding="utf-8")
+    assert "Antigo" not in model and model.count("ref role Litoral") == 1
+    assert model.count("ref role Jatobá") == 1
+    assert sorted(p.stem for p in (sm / "roles").glob("*.tmdl")) == ["Jatobá", "Litoral"]
+    litoral = (sm / "roles" / "Litoral.tmdl").read_text(encoding="utf-8")
+    assert 'tablePermission Dim_Empresa_Campanha = [Abreviação] = "Litoral"' in litoral
+    assert '[Unidade de Prestação Serviço] = "Litoral Embalagens"' in litoral

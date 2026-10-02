@@ -1,0 +1,11 @@
+role Estrela
+	modelPermission: read
+
+	tablePermission Dim_Empresa_Campanha = [Abreviação] = "Estrela"
+
+	tablePermission Planilha = [Unidade de Prestação Serviço] = "Estrela Química"
+
+	tablePermission TabelaFuncionarios = [Empresa] = "Estrela"
+
+	annotation PBI_Id = f540491817244eab8610931dcae97e55
+

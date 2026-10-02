@@ -36,5 +36,12 @@ ref table Slot
 ref table Parte
 ref table Faixa_Autor
 
+ref role Estrela
+ref role Girassol
+ref role Horizonte
+ref role Litoral
+ref role Pioneira
+ref role Planalto
+
 ref cultureInfo pt-BR
 

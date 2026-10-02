@@ -1,0 +1,11 @@
+role Girassol
+	modelPermission: read
+
+	tablePermission Dim_Empresa_Campanha = [Abreviação] = "Girassol"
+
+	tablePermission Planilha = [Unidade de Prestação Serviço] = "Girassol Engenharia"
+
+	tablePermission TabelaFuncionarios = [Empresa] = "Girassol"
+
+	annotation PBI_Id = 3d22a140eef04e07afd535587afa8e2c
+

@@ -1,0 +1,11 @@
+role Horizonte
+	modelPermission: read
+
+	tablePermission Dim_Empresa_Campanha = [Abreviação] = "Horizonte"
+
+	tablePermission Planilha = [Unidade de Prestação Serviço] = "Horizonte Plásticos"
+
+	tablePermission TabelaFuncionarios = [Empresa] = "Horizonte"
+
+	annotation PBI_Id = dca70874962a409f9477c329bea73aec
+
