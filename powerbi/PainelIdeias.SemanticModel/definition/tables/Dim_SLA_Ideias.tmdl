@@ -1,0 +1,105 @@
+table Dim_SLA_Ideias
+	lineageTag: a5751b8b-ac98-4b69-92a2-0e3a720b4427
+
+	column Chave_Primaria
+		dataType: string
+		lineageTag: 14925bcf-1c27-41a7-85f6-c5e297c324d0
+		summarizeBy: none
+		sourceColumn: Chave_Primaria
+
+		annotation SummarizationSetBy = Automatic
+
+	column Data_de_Entrada
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 6ea534d8-9614-483d-a7a6-4993b5a85736
+		summarizeBy: none
+		sourceColumn: Data_de_Entrada
+
+		annotation SummarizationSetBy = Automatic
+
+	column Data_de_Saida
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 0214be39-21e7-4caf-aa16-0363f484d3f0
+		summarizeBy: none
+		sourceColumn: Data_de_Saida
+
+		annotation SummarizationSetBy = Automatic
+
+	column Andamento_Etapa
+		dataType: string
+		lineageTag: 6d98635c-6149-4d6f-ab83-d25be29dd576
+		summarizeBy: none
+		sourceColumn: Andamento_Etapa
+
+		annotation SummarizationSetBy = Automatic
+
+	column Dias_na_Etapa
+		dataType: int64
+		formatString: 0
+		lineageTag: c4343205-a46d-4e24-ab63-80efe34528ab
+		summarizeBy: sum
+		sourceColumn: Dias_na_Etapa
+
+		annotation SummarizationSetBy = Automatic
+
+	column É_Ultimo_Status = VAR __k = Dim_SLA_Ideias[Chave_Primaria] VAR __e = Dim_SLA_Ideias[Data_de_Entrada] VAR __mx = MAXX ( FILTER ( ALL ( Dim_SLA_Ideias[Chave_Primaria], Dim_SLA_Ideias[Data_de_Entrada], Dim_SLA_Ideias[Data_de_Saida] ), Dim_SLA_Ideias[Chave_Primaria] = __k ), Dim_SLA_Ideias[Data_de_Entrada] ) VAR __n = COUNTROWS ( FILTER ( ALL ( Dim_SLA_Ideias[Chave_Primaria], Dim_SLA_Ideias[Data_de_Entrada], Dim_SLA_Ideias[Data_de_Saida] ), Dim_SLA_Ideias[Chave_Primaria] = __k && Dim_SLA_Ideias[Data_de_Entrada] = __mx ) ) RETURN IF ( __e = __mx, IF ( __n = 1 || ISBLANK ( Dim_SLA_Ideias[Data_de_Saida] ) || Dim_SLA_Ideias[Data_de_Saida] < DATE ( 1900, 1, 1 ), 1, 0 ), 0 )
+		formatString: 0
+		lineageTag: 7849544e-44f4-4b7e-b37f-8c648f48b14b
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column Etapa_Curta = SWITCH ( TRIM ( Dim_SLA_Ideias[Andamento_Etapa] ), "ETAPA 1: AVALIAÇÃO", "Avaliação", "ETAPA 2: PROPOSTA DE SOLUÇÃO", "Proposta de Solução", "BANCO DE IDEIAS", "Banco de Ideias", "Validação da Implantação", "Validação", TRIM ( Dim_SLA_Ideias[Andamento_Etapa] ) )
+		displayFolder: _Design
+		lineageTag: 71de0d38-9733-4666-8ac5-983758280b2e
+		sortByColumn: Etapa_Ordem
+
+	column Etapa_Ordem = SWITCH ( TRIM ( Dim_SLA_Ideias[Andamento_Etapa] ), "ETAPA 1: AVALIAÇÃO", 1, "ETAPA 2: PROPOSTA DE SOLUÇÃO", 2, "Aprovada", 3, "Em Implantação", 4, "Validação da Implantação", 5, "Implantada", 6, "BANCO DE IDEIAS", 7, "Reprovada", 8, 9 )
+		isHidden
+		displayFolder: _Design
+		lineageTag: 6062184f-ea9b-43a5-8480-6142142e9805
+
+	column Mes_Relativo = VAR _d = DATEDIFF ( EOMONTH ( Dim_SLA_Ideias[Data_de_Entrada], 0 ), EOMONTH ( MAX ( Referencia[Hoje] ), 0 ), MONTH ) RETURN SWITCH ( _d, 0, "Mês atual", 1, "Mês anterior", "Outros" )
+		displayFolder: _Design
+		lineageTag: c56622a8-08a7-421a-bed0-cb3f0e4f95af
+
+	column Faixa_Dias = SWITCH ( TRUE (), Dim_SLA_Ideias[Dias_na_Etapa] <= 15, "0–15 d", Dim_SLA_Ideias[Dias_na_Etapa] <= 30, "16–30 d", Dim_SLA_Ideias[Dias_na_Etapa] <= 60, "31–60 d", "+60 d" )
+		displayFolder: _Design
+		lineageTag: ddf39846-4e50-4831-b4df-170bdac53e4a
+		sortByColumn: Faixa_Ordem
+
+	column Faixa_Ordem = SWITCH ( TRUE (), Dim_SLA_Ideias[Dias_na_Etapa] <= 15, 1, Dim_SLA_Ideias[Dias_na_Etapa] <= 30, 2, Dim_SLA_Ideias[Dias_na_Etapa] <= 60, 3, 4 )
+		isHidden
+		displayFolder: _Design
+		lineageTag: e5236147-54ab-4188-959e-dd1c4e90f8ec
+
+	column Etapa_Anterior = VAR _id = Dim_SLA_Ideias[Chave_Primaria] VAR _dt = Dim_SLA_Ideias[Data_de_Entrada] VAR _ant = MAXX ( FILTER ( ALL ( Dim_SLA_Ideias ), Dim_SLA_Ideias[Chave_Primaria] = _id && Dim_SLA_Ideias[Data_de_Entrada] < _dt ), Dim_SLA_Ideias[Data_de_Entrada] ) RETURN IF ( ISBLANK ( _ant ), BLANK (), MAXX ( FILTER ( ALL ( Dim_SLA_Ideias ), Dim_SLA_Ideias[Chave_Primaria] = _id && Dim_SLA_Ideias[Data_de_Entrada] = _ant ), Dim_SLA_Ideias[Etapa_Curta] ) )
+		displayFolder: _Design
+		lineageTag: 3a750931-ba27-4786-b4e4-660744eeea28
+
+	column Movimento = IF ( ISBLANK ( Dim_SLA_Ideias[Etapa_Anterior] ) || Dim_SLA_Ideias[Etapa_Anterior] = Dim_SLA_Ideias[Etapa_Curta], BLANK (), Dim_SLA_Ideias[Etapa_Anterior] & "  →  " & Dim_SLA_Ideias[Etapa_Curta] )
+		displayFolder: _Design
+		lineageTag: af88e261-50af-4b04-a1cc-511b6f50d64b
+
+	column Data_Entrada_Dia = IF ( ISBLANK ( Dim_SLA_Ideias[Data_de_Entrada] ), BLANK (), DATE ( YEAR ( Dim_SLA_Ideias[Data_de_Entrada] ), MONTH ( Dim_SLA_Ideias[Data_de_Entrada] ), DAY ( Dim_SLA_Ideias[Data_de_Entrada] ) ) )
+		dataType: dateTime
+		formatString: dd/MM
+		displayFolder: _Design\Nativo
+		lineageTag: 07cd4004-399f-6482-9d53-7cfb81586f09
+		summarizeBy: none
+
+	partition Dim_SLA_Ideias = m
+		mode: import
+		source =
+				let
+				    Fonte = Sql.Database("localhost", "IdeiasDemo"),
+				    Dados = Fonte{[Schema="bi", Item="vw_Dim_SLA_Ideias"]}[Data]
+				in
+				    Dados
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

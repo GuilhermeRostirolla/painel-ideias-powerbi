@@ -1,0 +1,29 @@
+table Sel_Evolucao
+	lineageTag: 10f0d01f-cb33-b9cd-421e-9b270cdc9c2b
+
+	column Opcao
+		dataType: string
+		lineageTag: 010d4090-160f-f2b6-237b-1cd4ca532fb1
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Opcao]
+		sortByColumn: Ordem
+
+		annotation SummarizationSetBy = Automatic
+
+	column Ordem
+		dataType: int64
+		formatString: 0
+		lineageTag: 36ebb1c3-f29c-6fc6-9252-b3d540715378
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Ordem]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Sel_Evolucao = calculated
+		mode: import
+		source = DATATABLE ( "Opcao", STRING, "Ordem", INTEGER, { { "Criadas", 1 }, { "Implantadas", 2 }, { "Comparar", 3 } } )
+
+	annotation PBI_Id = 9ee07d8bbfa285846de9e8a9e6b75d96
+

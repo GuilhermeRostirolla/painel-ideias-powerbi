@@ -1,0 +1,38 @@
+table Sel_Mes
+	lineageTag: 28723b44-5b7b-e341-e2e7-9586928ae39c
+
+	column Opcao
+		dataType: string
+		lineageTag: b99fcd89-ad97-d8f7-9d01-b30991d0cef0
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Opcao]
+		sortByColumn: Ordem
+
+		annotation SummarizationSetBy = Automatic
+
+	column Ordem
+		dataType: int64
+		formatString: 0
+		lineageTag: 8701987e-2838-a4a9-14f2-50470854601c
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Ordem]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Mes_Relativo
+		dataType: string
+		lineageTag: dacfffd4-6ba5-6c14-227b-613702ad11d4
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Mes_Relativo]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Sel_Mes = calculated
+		mode: import
+		source = VAR __a = EOMONTH ( MAX ( Referencia[Hoje] ), -1 ) VAR __b = EOMONTH ( MAX ( Referencia[Hoje] ), 0 ) RETURN SELECTCOLUMNS ( { ( UPPER ( LEFT ( FORMAT ( __a, "mmm/yy" ), 1 ) ) & MID ( FORMAT ( __a, "mmm/yy" ), 2, 10 ), 1, "Mês anterior" ), ( UPPER ( LEFT ( FORMAT ( __b, "mmm/yy" ), 1 ) ) & MID ( FORMAT ( __b, "mmm/yy" ), 2, 10 ), 2, "Mês atual" ) }, "Opcao", [Value1], "Ordem", [Value2], "Mes_Relativo", [Value3] )
+
+	annotation PBI_Id = 18b7d8cdb9dedef8d2f2583de7ed7b4d
+

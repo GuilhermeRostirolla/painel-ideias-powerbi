@@ -1,0 +1,29 @@
+table Sel_Ranking
+	lineageTag: ef36a6bf-fc32-7da1-7d39-f29de77d395c
+
+	column Opcao
+		dataType: string
+		lineageTag: 1b0e9034-7981-dd6b-d5f0-27723928990c
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Opcao]
+		sortByColumn: Ordem
+
+		annotation SummarizationSetBy = Automatic
+
+	column Ordem
+		dataType: int64
+		formatString: 0
+		lineageTag: 8e912731-81dc-a286-7a89-1fbc23446541
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Ordem]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Sel_Ranking = calculated
+		mode: import
+		source = DATATABLE ( "Opcao", STRING, "Ordem", INTEGER, { { "Mais implantadas", 1 }, { "Mais ideias", 2 } } )
+
+	annotation PBI_Id = b3910ecbdb2a40090803b79a18cfcfd1
+

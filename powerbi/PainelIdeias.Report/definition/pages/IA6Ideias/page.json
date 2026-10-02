@@ -1,0 +1,89 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
+  "name": "IA6Ideias",
+  "displayName": "Detalhe das Ideias",
+  "displayOption": "FitToPage",
+  "height": 720,
+  "width": 1280,
+  "objects": {
+    "background": [
+      {
+        "properties": {
+          "image": {
+            "image": {
+              "name": {
+                "expr": {
+                  "Literal": {
+                    "Value": "'Fundo_ideias.png'"
+                  }
+                }
+              },
+              "url": {
+                "expr": {
+                  "ResourcePackageItem": {
+                    "PackageName": "RegisteredResources",
+                    "PackageType": 1,
+                    "ItemName": "Fundo_ideias.png"
+                  }
+                }
+              },
+              "scaling": {
+                "expr": {
+                  "Literal": {
+                    "Value": "'Fit'"
+                  }
+                }
+              }
+            }
+          },
+          "transparency": {
+            "expr": {
+              "Literal": {
+                "Value": "0D"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "outspace": [
+      {
+        "properties": {
+          "color": {
+            "solid": {
+              "color": {
+                "expr": {
+                  "Literal": {
+                    "Value": "'#F3F4F7'"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "visualInteractions": [
+    {
+      "source": "edde35968f2b5016ff8b",
+      "target": "9ca67f3c9c6a2ff755fc",
+      "type": "NoFilter"
+    },
+    {
+      "source": "edde35968f2b5016ff8b",
+      "target": "19d865d220398c486c80",
+      "type": "NoFilter"
+    },
+    {
+      "source": "e9a68b402b7de3ede296",
+      "target": "9ca67f3c9c6a2ff755fc",
+      "type": "NoFilter"
+    },
+    {
+      "source": "e9a68b402b7de3ede296",
+      "target": "19d865d220398c486c80",
+      "type": "NoFilter"
+    }
+  ]
+}

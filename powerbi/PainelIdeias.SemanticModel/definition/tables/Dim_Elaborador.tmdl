@@ -1,0 +1,33 @@
+table Dim_Elaborador
+	lineageTag: 6f1a74a4-9c36-4f78-b059-6f68ad66a7cc
+
+	column Chave_Primaria
+		dataType: int64
+		formatString: 0
+		lineageTag: 6cfee602-4881-461f-a10d-3afde71d0966
+		summarizeBy: none
+		sourceColumn: Chave_Primaria
+
+		annotation SummarizationSetBy = Automatic
+
+	column Nome_elaborador
+		dataType: string
+		lineageTag: 2a0f68db-a91e-4532-98c0-6cb3027ec51c
+		summarizeBy: none
+		sourceColumn: Nome_elaborador
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Dim_Elaborador = m
+		mode: import
+		source =
+				let
+				    Fonte = Sql.Database("localhost", "IdeiasDemo"),
+				    Dados = Fonte{[Schema="bi", Item="vw_Dim_Elaborador"]}[Data]
+				in
+				    Dados
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

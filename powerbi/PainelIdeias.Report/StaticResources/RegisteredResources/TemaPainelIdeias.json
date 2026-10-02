@@ -1,0 +1,22 @@
+{
+  "name": "Painel de Ideias",
+  "dataColors": [
+    "#1F4E5F",
+    "#E0A100",
+    "#5B7A89",
+    "#A9BCC6",
+    "#2F7A8C",
+    "#B37F00",
+    "#8FA9B5",
+    "#1B2A33"
+  ],
+  "foreground": "#1B2A33",
+  "background": "#FFFFFF",
+  "tableAccent": "#1F4E5F",
+  "good": "#2F7A8C",
+  "neutral": "#A9BCC6",
+  "bad": "#E0A100",
+  "maximum": "#1F4E5F",
+  "center": "#A9BCC6",
+  "minimum": "#E8EEF1"
+}

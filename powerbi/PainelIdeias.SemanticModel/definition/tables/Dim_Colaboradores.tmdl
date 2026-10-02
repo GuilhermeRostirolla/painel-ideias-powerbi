@@ -1,0 +1,86 @@
+table Dim_Colaboradores
+	lineageTag: 28183663-a172-4b52-96c3-7625bc31af77
+
+	measure Qtd_Engajados = ```
+			
+			VAR Abrev = SELECTEDVALUE(Dim_Empresa_Campanha[Abreviação])
+			VAR UnidadePlanilha = 
+			    MAXX ( FILTER ( ALL ( Dim_Empresa_Campanha ), Dim_Empresa_Campanha[Abreviação] = Abrev ), Dim_Empresa_Campanha[Empresa] )
+			RETURN
+			    IF(
+			        ISBLANK(Abrev),
+			        CALCULATE(
+			            DISTINCTCOUNT(Dim_Colaboradores[Nome_Colaborador]),
+			            ALL(Dim_Colaboradores),
+			            ALL(Dim_Data),
+			            ALL(Dim_Empresa_Campanha),
+			            ALL(Dim_Estado),
+			            ALL(Fato_Ideias)
+			        ),
+			        CALCULATE(
+			            COUNTROWS(
+			                FILTER(
+			                    VALUES(Dim_Colaboradores[Nome_Colaborador]),
+			                    CONTAINS(
+			                        FILTER(ALL(Planilha), Planilha[Unidade de Prestação Serviço] = UnidadePlanilha),
+			                        Planilha[Funcionário], Dim_Colaboradores[Nome_Colaborador]
+			                    )
+			                )
+			            )
+			        )
+			    )
+			```
+		formatString: 0
+		lineageTag: f724a50c-8be1-43f3-8e41-6ed8f40816d0
+
+	measure Qtd_Funcionarios = ```
+			
+			VAR Abrev = SELECTEDVALUE(Dim_Empresa_Campanha[Abreviação])
+			RETURN
+			    IF(
+			        ISBLANK(Abrev),
+			        CALCULATE(SUM(TabelaFuncionarios[Funcionarios]), ALL(TabelaFuncionarios)),
+			        CALCULATE(SUM(TabelaFuncionarios[Funcionarios]), TabelaFuncionarios[Empresa] = Abrev)
+			    )
+			
+			```
+		formatString: 0
+		lineageTag: 9b948502-c0bb-446e-b2da-33f3cfa0d0f7
+
+	column Chave_Primaria
+		dataType: string
+		lineageTag: e7c56b0a-5b54-4bcb-925c-dc0e9d9e487c
+		summarizeBy: none
+		sourceColumn: Chave_Primaria
+
+		annotation SummarizationSetBy = Automatic
+
+	column ID_Colaborador
+		dataType: string
+		lineageTag: 85eaca00-f7cf-4a57-8258-2bc41863e0ab
+		summarizeBy: none
+		sourceColumn: ID_Colaborador
+
+		annotation SummarizationSetBy = Automatic
+
+	column Nome_Colaborador
+		dataType: string
+		lineageTag: 9a8d053b-ffcb-47b2-a9ed-10f415b006f7
+		summarizeBy: none
+		sourceColumn: Nome_Colaborador
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Dim_Colaboradores = m
+		mode: import
+		source =
+				let
+				    Fonte = Sql.Database("localhost", "IdeiasDemo"),
+				    Dados = Fonte{[Schema="bi", Item="vw_Dim_Colaboradores"]}[Data]
+				in
+				    Dados
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

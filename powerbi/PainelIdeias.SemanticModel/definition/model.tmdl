@@ -1,0 +1,40 @@
+model Model
+	culture: pt-BR
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: pt-BR
+	dataAccessOptions
+		fastCombine
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 0
+
+annotation PBI_QueryOrder = ["Fato_Ideias","Dim_Estado","Dim_Tema","Dim_Colaboradores","Dim_Valores","Dim_SLA_Ideias","Dim_Data","Dim_Empresa_Campanha","Dim_Ganhos_Indiretos","Dim_Elaborador","Planilha","RangeStart","RangeEnd","Referencia","TabelaFuncionarios"]
+
+annotation PBI_ProTooling = ["DaxQueryView_Desktop","DevMode"]
+
+ref table Fato_Ideias
+ref table Referencia
+ref table Dim_Estado
+ref table Dim_Tema
+ref table Dim_Colaboradores
+ref table Dim_Valores
+ref table Dim_SLA_Ideias
+ref table Dim_Data
+ref table Dim_Empresa_Campanha
+ref table Dim_Ganhos_Indiretos
+ref table TabelaFuncionarios
+ref table Dim_Elaborador
+ref table Planilha
+ref table dCalendario
+ref table Sel_Etapa
+ref table Sel_Evolucao
+ref table Sel_Implantadas
+ref table Sel_Mes
+ref table Sel_Ranking
+ref table Slot
+ref table Parte
+ref table Faixa_Autor
+
+ref cultureInfo pt-BR
+

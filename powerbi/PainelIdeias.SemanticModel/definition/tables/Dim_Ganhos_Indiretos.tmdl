@@ -1,0 +1,38 @@
+table Dim_Ganhos_Indiretos
+	lineageTag: 7fdfb56d-d255-43ac-ab2f-362b87697b61
+
+	column Primaria_Key
+		dataType: string
+		lineageTag: baf1664e-0af6-4fd4-979e-5a03fa4c1599
+		summarizeBy: none
+		sourceColumn: Primaria_Key
+
+		annotation SummarizationSetBy = Automatic
+
+	column Ganhos_Indiretos
+		dataType: string
+		lineageTag: 6856807e-7d2b-4896-ba94-97b1bcfcdac3
+		summarizeBy: none
+		sourceColumn: Ganhos_Indiretos
+
+		annotation SummarizationSetBy = Automatic
+
+	column Ganho_Curto = Dim_Ganhos_Indiretos[Ganhos_Indiretos]
+		dataType: string
+		displayFolder: _Design\Nativo
+		lineageTag: f0795468-1547-b5c7-52a0-a09b3e53e51a
+		summarizeBy: none
+
+	partition Dim_Ganhos_Indiretos = m
+		mode: import
+		source =
+				let
+				    Fonte = Sql.Database("localhost", "IdeiasDemo"),
+				    Dados = Fonte{[Schema="bi", Item="vw_Dim_Ganhos_Indiretos"]}[Data]
+				in
+				    Dados
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

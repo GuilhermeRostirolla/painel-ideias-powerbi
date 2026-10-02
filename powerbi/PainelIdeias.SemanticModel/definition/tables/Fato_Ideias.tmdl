@@ -1,0 +1,1402 @@
+table Fato_Ideias
+	lineageTag: bca70f98-88f6-49c9-a1e2-12ed2e476e39
+
+	measure 'Evo Eixo Max' = MAXX ( VALUES ( dCalendario[AnoMes] ), MAX ( [Evo Criadas] + 0, [Evo Implantadas] + 0 ) ) * 1.25
+		formatString: 0
+		displayFolder: _Design
+		lineageTag: 21d649e7-1340-465e-aa8d-2a3da6b32684
+
+	measure 'Taxa_Engajamento (%)' = ```
+			
+			VAR Abrev = SELECTEDVALUE(Dim_Empresa_Campanha[Abreviação])
+			VAR UnidadePlanilha = 
+			    MAXX ( FILTER ( ALL ( Dim_Empresa_Campanha ), Dim_Empresa_Campanha[Abreviação] = Abrev ), Dim_Empresa_Campanha[Empresa] )
+			VAR Engajados = 
+			    IF(
+			        ISBLANK(Abrev),
+			        CALCULATE(
+			            DISTINCTCOUNT(Dim_Colaboradores[Nome_Colaborador]),
+			            ALL(Dim_Colaboradores),
+			            ALL(Dim_Data),
+			            ALL(Dim_Empresa_Campanha),
+			            ALL(Dim_Estado),
+			            ALL(Fato_Ideias)
+			        ),
+			        CALCULATE(
+			            COUNTROWS(
+			                FILTER(
+			                    VALUES(Dim_Colaboradores[Nome_Colaborador]),
+			                    CONTAINS(
+			                        FILTER(ALL(Planilha), Planilha[Unidade de Prestação Serviço] = UnidadePlanilha),
+			                        Planilha[Funcionário], Dim_Colaboradores[Nome_Colaborador]
+			                    )
+			                )
+			            )
+			        )
+			    )
+			VAR TotalFunc = 
+			    IF(
+			        ISBLANK(Abrev),
+			        CALCULATE(SUM(TabelaFuncionarios[Funcionarios]), ALL(TabelaFuncionarios)),
+			        CALCULATE(SUM(TabelaFuncionarios[Funcionarios]), TabelaFuncionarios[Empresa] = Abrev)
+			    )
+			RETURN
+			DIVIDE(Engajados, TotalFunc, 0)
+			```
+		lineageTag: 5799d0d0-4de6-49dc-bff2-d14daf892b1c
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Qtd Ideias' = COUNTROWS ( Fato_Ideias )
+		formatString: #,0
+		displayFolder: _Design\Geral
+		lineageTag: 565f33a2-a10b-4fbd-a873-24ab1f793254
+
+	measure 'Qtd Implantadas' = CALCULATE ( COUNTROWS ( Fato_Ideias ), Dim_Estado[Estados] = "Implantada" )
+		formatString: #,0
+		displayFolder: _Design\Geral
+		lineageTag: 33914f2e-f1c1-4247-b3e6-262319f23726
+
+	measure 'Qtd Aprovadas' = CALCULATE ( COUNTROWS ( Fato_Ideias ), Dim_Estado[Estados] IN { "Aprovada", "Em Implantação", "Implantada", "Validação da Implantação" } )
+		formatString: #,0
+		displayFolder: _Design\Geral
+		lineageTag: 79b7f4f4-5201-453b-ad01-214fccf4752d
+
+	measure 'Taxa Aprovação' = DIVIDE ( [Qtd Aprovadas], [Qtd Ideias] )
+		formatString: 0.0%
+		displayFolder: _Design\Geral
+		lineageTag: 0e2b9c07-5c07-4403-bdfd-78fc30c4fde5
+
+	measure 'Taxa Conversão' = DIVIDE ( [Qtd Implantadas], [Qtd Ideias] )
+		formatString: 0.0%
+		displayFolder: _Design\Geral
+		lineageTag: 7b01e877-0d43-43ca-b038-f8a9f7e1c4b6
+
+	measure 'Cadastradas Mês Atual' = CALCULATE ( [Qtd Ideias], FILTER ( ALL ( Fato_Ideias[resultado.CriadoEm] ), EOMONTH ( Fato_Ideias[resultado.CriadoEm], 0 ) = EOMONTH ( MAX ( Referencia[Hoje] ), 0 ) ) ) + 0
+		formatString: #,0
+		displayFolder: _Design\Geral
+		lineageTag: 9bdf4a17-de7e-49e1-86ed-ee8283884ec4
+
+	measure 'Cadastradas Mês Anterior' = CALCULATE ( [Qtd Ideias], FILTER ( ALL ( Fato_Ideias[resultado.CriadoEm] ), EOMONTH ( Fato_Ideias[resultado.CriadoEm], 0 ) = EOMONTH ( MAX ( Referencia[Hoje] ), -1 ) ) ) + 0
+		formatString: #,0
+		displayFolder: _Design\Geral
+		lineageTag: d4decdef-f1f7-4480-b2f4-db4fbf24aeb4
+
+	measure 'Implantadas Mês Atual' = CALCULATE ( [Qtd Implantadas], FILTER ( ALL ( Fato_Ideias[Data_Implantadas] ), EOMONTH ( Fato_Ideias[Data_Implantadas], 0 ) = EOMONTH ( MAX ( Referencia[Hoje] ), 0 ) ) ) + 0
+		formatString: #,0
+		displayFolder: _Design\Geral
+		lineageTag: ce455c0e-0eda-4382-b28d-b8f7026f8eb6
+
+	measure 'Implantadas Mês Anterior' = CALCULATE ( [Qtd Implantadas], FILTER ( ALL ( Fato_Ideias[Data_Implantadas] ), EOMONTH ( Fato_Ideias[Data_Implantadas], 0 ) = EOMONTH ( MAX ( Referencia[Hoje] ), -1 ) ) ) + 0
+		formatString: #,0
+		displayFolder: _Design\Geral
+		lineageTag: ef206c9b-cff0-4bd1-9af5-2339f87e290e
+
+	measure 'Txt Var Cadastradas' = VAR _v = DIVIDE ( [Cadastradas Mês Atual] - [Cadastradas Mês Anterior], [Cadastradas Mês Anterior] ) RETURN IF ( ISBLANK ( _v ), "", FORMAT ( _v, "+0%;−0%;0%" ) & " vs " & FORMAT ( EOMONTH ( MAX ( Referencia[Hoje] ), -1 ), "mmm" ) )
+		displayFolder: _Design\Geral
+		lineageTag: c1eefbaa-7886-4a54-9681-04696d29e5ec
+
+	measure 'Txt Var Implantadas' = VAR _v = DIVIDE ( [Implantadas Mês Atual] - [Implantadas Mês Anterior], [Implantadas Mês Anterior] ) RETURN IF ( ISBLANK ( _v ), "", FORMAT ( _v, "+0%;−0%;0%" ) & " vs " & FORMAT ( EOMONTH ( MAX ( Referencia[Hoje] ), -1 ), "mmm" ) )
+		displayFolder: _Design\Geral
+		lineageTag: 47254bfb-e584-42c2-a001-2417ed55c34e
+
+	measure 'Txt Sub Cadastradas' = FORMAT ( [Cadastradas Mês Atual], "0" ) & " em " & FORMAT ( MAX ( Referencia[Hoje] ), "mmm/yy" )
+		displayFolder: _Design\Geral
+		lineageTag: 0115c321-897a-4f4f-a021-2d72e5409585
+
+	measure 'Txt Sub Implantadas' = FORMAT ( [Implantadas Mês Atual], "0" ) & " em " & FORMAT ( MAX ( Referencia[Hoje] ), "mmm/yy" )
+		displayFolder: _Design\Geral
+		lineageTag: afeeac51-0088-472e-81d3-c125490d6fd7
+
+	measure 'Txt Aprovadas' = FORMAT ( [Qtd Aprovadas], "#,0" ) & " aprovadas"
+		displayFolder: _Design\Geral
+		lineageTag: e1f499fd-caf9-452e-88c2-4d5bd799e38d
+
+	measure 'Implantadas por Data' = CALCULATE ( [Qtd Implantadas], USERELATIONSHIP ( Fato_Ideias[Data_Implantadas], dCalendario[Date] ), CROSSFILTER ( Dim_Data[Data_de_Criacao], dCalendario[Date], NONE ) )
+		formatString: #,0
+		displayFolder: _Design\Geral
+		lineageTag: 521abd08-7685-4c21-9643-8044c9e9e6a9
+
+	measure 'Implantadas Acumulado' = VAR _fim = MAX ( dCalendario[Date] ) RETURN CALCULATE ( [Implantadas por Data], FILTER ( ALL ( dCalendario ), dCalendario[Date] <= _fim ) )
+		formatString: #,0
+		displayFolder: _Design\Geral
+		lineageTag: 6b8b7626-6195-4cd2-aeec-157dc4bf9749
+
+	measure 'Txt Engajamento' = FORMAT ( [Qtd_Engajados], "#,0" ) & " de " & FORMAT ( [Qtd_Funcionarios], "#,0" ) & " colab."
+		displayFolder: _Design\Geral
+		lineageTag: f727afaa-2677-4e95-be9d-3fc3ac465803
+
+	measure 'Tempo Médio Avaliação' = CALCULATE ( AVERAGE ( Dim_SLA_Ideias[Dias_na_Etapa] ), Dim_SLA_Ideias[Etapa_Curta] = "Avaliação" )
+		formatString: 0.0" d"
+		displayFolder: _Design\SLA
+		lineageTag: d5cf8f18-6769-4662-867a-b2dc381ffba4
+
+	measure 'Tempo Médio Proposta' = CALCULATE ( AVERAGE ( Dim_SLA_Ideias[Dias_na_Etapa] ), Dim_SLA_Ideias[Etapa_Curta] = "Proposta de Solução" )
+		formatString: 0.0" d"
+		displayFolder: _Design\SLA
+		lineageTag: ce542fff-db63-4232-ac8b-0cb382f59b1f
+
+	measure 'Txt Mediana Avaliação' = "mediana " & FORMAT ( CALCULATE ( MEDIAN ( Dim_SLA_Ideias[Dias_na_Etapa] ), Dim_SLA_Ideias[Etapa_Curta] = "Avaliação" ), "0.0" ) & " dias"
+		displayFolder: _Design\SLA
+		lineageTag: bffcc7e7-1185-40d8-9964-ef314330f0c0
+
+	measure 'Txt Mediana Proposta' = "mediana " & FORMAT ( CALCULATE ( MEDIAN ( Dim_SLA_Ideias[Dias_na_Etapa] ), Dim_SLA_Ideias[Etapa_Curta] = "Proposta de Solução" ), "0" ) & " dias"
+		displayFolder: _Design\SLA
+		lineageTag: 91dfb036-dc05-4e83-b8e7-32adda553d87
+
+	measure 'Aval→Prop Mês Atual' = CALCULATE ( COUNTROWS ( Dim_SLA_Ideias ), Dim_SLA_Ideias[Etapa_Anterior] = "Avaliação", Dim_SLA_Ideias[Etapa_Curta] = "Proposta de Solução", Dim_SLA_Ideias[Mes_Relativo] = "Mês atual" ) + 0
+		formatString: #,0
+		displayFolder: _Design\SLA
+		lineageTag: 2c70de6d-9f8e-4efe-93cb-13f454b37b73
+
+	measure 'Aval→Prop Mês Anterior' = CALCULATE ( COUNTROWS ( Dim_SLA_Ideias ), Dim_SLA_Ideias[Etapa_Anterior] = "Avaliação", Dim_SLA_Ideias[Etapa_Curta] = "Proposta de Solução", Dim_SLA_Ideias[Mes_Relativo] = "Mês anterior" ) + 0
+		formatString: #,0
+		displayFolder: _Design\SLA
+		lineageTag: 828dc6ae-e90b-40c2-8741-3ba0b7da9a9c
+
+	measure 'Txt Aval→Prop' = VAR _a = [Aval→Prop Mês Atual] VAR _b = [Aval→Prop Mês Anterior] RETURN IF ( _a = _b, "= ", IF ( _a > _b, "+" & FORMAT ( _a - _b, "0" ) & " ", "−" & FORMAT ( _b - _a, "0" ) & " " ) ) & "vs " & FORMAT ( EOMONTH ( MAX ( Referencia[Hoje] ), -1 ), "mmm" )
+		displayFolder: _Design\SLA
+		lineageTag: df4fd6e9-399b-4527-b242-4fb3e9dda193
+
+	measure 'Ideias Abertas' = CALCULATE ( COUNTROWS ( Dim_SLA_Ideias ), Dim_SLA_Ideias[É_Ultimo_Status] = 1, Dim_SLA_Ideias[Etapa_Curta] IN { "Avaliação", "Proposta de Solução", "Aprovada", "Em Implantação", "Validação" } )
+		formatString: #,0
+		displayFolder: _Design\SLA
+		lineageTag: ff65e343-37bc-4cdf-a1c9-180e348a8200
+
+	measure 'Paradas +60 dias' = CALCULATE ( [Ideias Abertas], Dim_SLA_Ideias[Dias_na_Etapa] > 60 ) + 0
+		formatString: #,0
+		displayFolder: _Design\SLA
+		lineageTag: 21fb14ba-f027-4210-a10e-3bbc42b39e11
+
+	measure '% Paradas' = DIVIDE ( [Paradas +60 dias], [Ideias Abertas] )
+		formatString: 0%
+		displayFolder: _Design\SLA
+		lineageTag: 5cafba35-bdaf-4ce7-adf2-1d2c7d047f8a
+
+	measure 'Txt Paradas' = FORMAT ( [% Paradas], "0%" ) & " das abertas"
+		displayFolder: _Design\SLA
+		lineageTag: 4dfb6ec0-0244-49ce-ae7b-917fd1887463
+
+	measure 'Txt Abertas' = "de " & FORMAT ( [Ideias Abertas], "#,0" ) & " ideias abertas"
+		displayFolder: _Design\SLA
+		lineageTag: b27fe235-8831-42c8-9ab6-93f462e592e7
+
+	measure 'Ideias na Faixa' = CALCULATE ( COUNTROWS ( Dim_SLA_Ideias ), Dim_SLA_Ideias[É_Ultimo_Status] = 1 ) + 0
+		formatString: #,0
+		displayFolder: _Design\SLA
+		lineageTag: e6951cab-84e8-4da4-a647-4dd9991ac993
+
+	measure 'SLA Etapa (dias)' = SWITCH ( SELECTEDVALUE ( Sel_Etapa[Etapa] ), "Avaliação", 15, "Proposta de Solução", 45, "Aprovada", 30, "Em Implantação", 90, "Validação", 20, [SLA Referência (dias)] )
+		formatString: 0
+		displayFolder: _Design
+		lineageTag: 66ebb81f-d5bd-443a-9668-6a4ebbc9436d
+
+	measure 'Meta Conversão' = 0.15
+		formatString: 0%
+		displayFolder: _Design
+		lineageTag: 2cd593ec-e784-4819-a8b1-6342085562de
+
+	measure 'SLA Referência (dias)' = 60
+		formatString: 0
+		displayFolder: _Design\SLA
+		lineageTag: 8bb1be74-df41-4537-8e3a-19b569a3d678
+
+	measure 'Lead Time Médio' = AVERAGE ( Fato_Ideias[Lead_Time_Dias] )
+		formatString: 0" d"
+		displayFolder: _Design\Implantadas
+		lineageTag: 3b693adc-2925-4ba1-b6b9-8a95763fe20e
+
+	measure 'Txt Lead Time Mediana' = "mediana " & FORMAT ( MEDIAN ( Fato_Ideias[Lead_Time_Dias] ), "0" ) & " d"
+		displayFolder: _Design\Implantadas
+		lineageTag: c1f9f135-6f16-4b3f-9d2c-da98b003f801
+
+	measure 'Menções Ganhos' = CALCULATE ( COUNTROWS ( Dim_Ganhos_Indiretos ), Dim_Ganhos_Indiretos[Ganhos_Indiretos] <> "Em Etapas Anteriores", NOT ISBLANK ( Dim_Ganhos_Indiretos[Ganhos_Indiretos] ) )
+		formatString: #,0
+		displayFolder: _Design\Implantadas
+		lineageTag: 26ab3bc0-7846-4786-ac00-56229e41a124
+
+	measure 'Valor Previsto' = SUM ( Dim_Valores[Qual investimento previsto para implementar?] )
+		formatString: "R$" #,0
+		displayFolder: _Design\Financeiro
+		lineageTag: 3c7d4e4c-d8a7-43f1-bc74-c4d5d4200335
+
+	measure 'Valor Investido' = SUM ( Dim_Valores[Valor investido (R$):] )
+		formatString: "R$" #,0
+		displayFolder: _Design\Financeiro
+		lineageTag: 00db1786-945d-4286-959c-8ec6f0aa2967
+
+	measure 'Ganho Previsto 12m' = SUM ( Dim_Valores[Qual a previsão de ganho (R$) em 12 meses?] )
+		formatString: "R$" #,0
+		displayFolder: _Design\Financeiro
+		lineageTag: 80914c2c-1269-47e4-acb2-536787632981
+
+	measure 'Ideias com Investimento' = COUNTROWS ( FILTER ( Dim_Valores, Dim_Valores[Qual investimento previsto para implementar?] > 0 || Dim_Valores[Valor investido (R$):] > 0 ) ) + 0
+		formatString: #,0
+		displayFolder: _Design\Financeiro
+		lineageTag: bbf65aa9-ac55-4332-9ec5-651c65936756
+
+	measure 'Txt % Ideias com Investimento' = FORMAT ( DIVIDE ( [Ideias com Investimento], [Qtd Ideias] ), "0.0%" ) & " do total"
+		displayFolder: _Design\Financeiro
+		lineageTag: 168fc2fd-fe05-44a5-83be-294029806ef7
+
+	measure 'Txt % Investido' = FORMAT ( DIVIDE ( [Valor Investido], [Valor Previsto] ), "0%" ) & " do previsto"
+		displayFolder: _Design\Financeiro
+		lineageTag: 87a6b31b-5db2-4596-8bf7-731fe29e57ea
+
+	measure 'Txt Retorno' = FORMAT ( DIVIDE ( [Ganho Previsto 12m], [Valor Previsto] ), "0.00" ) & "× o previsto"
+		displayFolder: _Design\Financeiro
+		lineageTag: 3cca2d19-656c-468b-9952-ea3b0549837b
+
+	measure 'Txt % Em Implantação' = FORMAT ( DIVIDE ( CALCULATE ( [Valor Previsto], Dim_Estado[Estados] = "Em Implantação" ), [Valor Previsto] ), "0%" ) & " em implantação"
+		displayFolder: _Design\Financeiro
+		lineageTag: f0b0c595-c872-4c2b-a790-e54de1b2bd4e
+
+	measure 'Ideias com Valor (faixa)' = CALCULATE ( COUNTROWS ( Dim_Valores ), KEEPFILTERS ( Dim_Valores[Faixa] <> "0-Sem valor" ) )
+		formatString: #,0
+		displayFolder: _Design\Financeiro
+		lineageTag: fee36dcd-e133-42b3-8582-1bfe810cf4e6
+
+	measure Autores = DISTINCTCOUNT ( Dim_Elaborador[Nome_elaborador] )
+		formatString: #,0
+		displayFolder: _Design\Colaboradores
+		lineageTag: 58bfc0e7-1968-4f2a-aafd-2d439e98a687
+
+	measure 'Autores com Implantada' = CALCULATE ( [Autores], Dim_Estado[Estados] = "Implantada" )
+		formatString: #,0
+		displayFolder: _Design\Colaboradores
+		lineageTag: bffd77ea-7f9b-4570-8dd8-222c2fd4bfde
+
+	measure '% Autores com Implantada' = DIVIDE ( [Autores com Implantada], [Autores] )
+		formatString: 0.0%
+		displayFolder: _Design\Colaboradores
+		lineageTag: 751f4979-927e-4f51-b4d5-4a5c8a4cc62f
+
+	measure 'Txt Autores' = "de " & FORMAT ( [Autores], "#,0" ) & " autores"
+		displayFolder: _Design\Colaboradores
+		lineageTag: 17ad0aa6-0dc9-4198-9cbf-aa7a10ef868d
+
+	measure 'Ideias por Autor' = DIVIDE ( [Qtd Ideias], [Autores] )
+		formatString: 0.0
+		displayFolder: _Design\Colaboradores
+		lineageTag: ec56b25e-c121-4f1b-9eb5-829f2c9ba69f
+
+	measure 'Autores Ativos Mês Atual' = CALCULATE ( [Autores], FILTER ( ALL ( Fato_Ideias[resultado.CriadoEm] ), EOMONTH ( Fato_Ideias[resultado.CriadoEm], 0 ) = EOMONTH ( MAX ( Referencia[Hoje] ), 0 ) ) ) + 0
+		formatString: #,0
+		displayFolder: _Design\Colaboradores
+		lineageTag: 5495b589-0aa9-4918-b179-651ac7553b05
+
+	measure 'Autores Ativos Mês Anterior' = CALCULATE ( [Autores], FILTER ( ALL ( Fato_Ideias[resultado.CriadoEm] ), EOMONTH ( Fato_Ideias[resultado.CriadoEm], 0 ) = EOMONTH ( MAX ( Referencia[Hoje] ), -1 ) ) ) + 0
+		formatString: #,0
+		displayFolder: _Design\Colaboradores
+		lineageTag: d2c63a5a-cf2e-48a1-b6c1-37b5969b3a5e
+
+	measure 'Txt Var Autores' = VAR _v = DIVIDE ( [Autores Ativos Mês Atual] - [Autores Ativos Mês Anterior], [Autores Ativos Mês Anterior] ) RETURN IF ( ISBLANK ( _v ), "", FORMAT ( _v, "+0%;−0%;0%" ) & " vs " & FORMAT ( EOMONTH ( MAX ( Referencia[Hoje] ), -1 ), "mmm" ) )
+		displayFolder: _Design\Colaboradores
+		lineageTag: c2c9b548-71df-4ea2-99f1-7953d88fd160
+
+	measure 'Autores por Mês' = [Autores]
+		formatString: #,0
+		displayFolder: _Design\Colaboradores
+		lineageTag: 885fb5b6-9c1c-481d-9367-7a6fe9343065
+
+	measure 'Ideias +60 dias' = CALCULATE ( COUNTROWS ( Fato_Ideias ), Fato_Ideias[Dias_Etapa_Atual] > 60 ) + 0
+		formatString: #,0
+		displayFolder: _Design\Detalhe
+		lineageTag: f0a3d1fc-4bed-4381-94f7-c881eb6e1950
+
+	measure 'Cor Dias' = VAR _d = MAX ( Fato_Ideias[Dias_Etapa_Atual] ) RETURN SWITCH ( TRUE (), _d > 60, "#B1820B", _d > 30, "#276983", "#1F7A5C" )
+		displayFolder: _Design\Formatação
+		lineageTag: 44730106-fa65-40fe-83d2-a35fb5c1a0c9
+
+	measure 'Cor Status' = SWITCH ( MAX ( Fato_Ideias[Etapa_Atual] ), "Implantada", "#1F7A5C", "Em Implantação", "#276983", "Validação", "#276983", "Aprovada", "#276983", "Reprovada", "#B1820B", "#5B6170" )
+		displayFolder: _Design\Formatação
+		lineageTag: b78529e4-2bc3-443c-a153-f1bb75dc04e5
+
+	measure 'Tempo Avaliação por Mês' = CALCULATE ( [Tempo Médio Avaliação], USERELATIONSHIP ( Dim_SLA_Ideias[Data_de_Entrada], dCalendario[Date] ), CROSSFILTER ( Dim_Data[Data_de_Criacao], dCalendario[Date], NONE ) )
+		formatString: 0
+		displayFolder: _Design\SLA
+		lineageTag: 2b67e4bf-aa50-4140-8949-1329af31e2a7
+
+	measure 'Tempo Proposta por Mês' = CALCULATE ( [Tempo Médio Proposta], USERELATIONSHIP ( Dim_SLA_Ideias[Data_de_Entrada], dCalendario[Date] ), CROSSFILTER ( Dim_Data[Data_de_Criacao], dCalendario[Date], NONE ) )
+		formatString: 0
+		displayFolder: _Design\SLA
+		lineageTag: 987fbc61-547f-425a-b1d1-38eedd923dcc
+
+	measure 'Aval→Prop por Mês' = CALCULATE ( COUNTROWS ( Dim_SLA_Ideias ), Dim_SLA_Ideias[Etapa_Anterior] = "Avaliação", Dim_SLA_Ideias[Etapa_Curta] = "Proposta de Solução", USERELATIONSHIP ( Dim_SLA_Ideias[Data_de_Entrada], dCalendario[Date] ), CROSSFILTER ( Dim_Data[Data_de_Criacao], dCalendario[Date], NONE ) )
+		formatString: 0
+		displayFolder: _Design\SLA
+		lineageTag: e87945e1-8a85-43dc-be72-ac05ccdaea4d
+
+	measure 'Lead Time por Mês' = CALCULATE ( [Lead Time Médio], USERELATIONSHIP ( Fato_Ideias[Data_Implantadas], dCalendario[Date] ), CROSSFILTER ( Dim_Data[Data_de_Criacao], dCalendario[Date], NONE ) )
+		formatString: 0
+		displayFolder: _Design\Implantadas
+		lineageTag: 3983cd87-8a4b-4d13-b049-d6a8150d414d
+
+	measure 'Investido por Mês' = CALCULATE ( [Valor Investido], USERELATIONSHIP ( Fato_Ideias[Data_Implantadas], dCalendario[Date] ), CROSSFILTER ( Dim_Data[Data_de_Criacao], dCalendario[Date], NONE ) )
+		formatString: 0
+		displayFolder: _Design\Financeiro
+		lineageTag: a8393b75-3c99-4e7e-abf1-4fc9f7971a53
+
+	measure 'Txt Pessoa' = IF ( HASONEVALUE ( Dim_Elaborador[Nome_elaborador] ), "Ideias de " & VALUES ( Dim_Elaborador[Nome_elaborador] ), "Ideias de todos os autores · clique numa pessoa no ranking" )
+		displayFolder: _Design\Colaboradores
+		lineageTag: 671ec0bc-3082-4341-b093-6c95de04efd4
+
+	measure 'Txt Pessoa Sub' = FORMAT ( [Qtd Ideias], "#,0" ) & " ideias · " & FORMAT ( [Qtd Implantadas] + 0, "#,0" ) & " implantadas"
+		displayFolder: _Design\Colaboradores
+		lineageTag: e4e6cc0c-3fd1-41fd-ad20-40be168eb4fc
+
+	measure 'Txt % Autores' = FORMAT ( [% Autores com Implantada], "0.0%" ) & " dos autores"
+		displayFolder: _Design\Colaboradores
+		lineageTag: 3551ebf4-1fad-4df8-9785-9075663df631
+
+	measure 'Txt Ideias por Autor' = FORMAT ( [Qtd Ideias], "#,0" ) & " ideias ÷ " & FORMAT ( [Autores], "#,0" ) & " autores"
+		displayFolder: _Design\Colaboradores
+		lineageTag: 08febab3-59bd-42d4-b635-6b42559a3f61
+
+	measure 'Txt Autores Ativos' = "enviaram ideia em " & FORMAT ( MAX ( Referencia[Hoje] ), "mmm/yy" )
+		displayFolder: _Design\Colaboradores
+		lineageTag: 8693ac09-c297-48e2-83f2-ccee6919e494
+
+	measure 'Cor Var' = IF ( LEFT ( [Txt Var Cadastradas], 1 ) = "+", "#1F7A5C", "#B1820B" )
+		displayFolder: _Design\Formatação
+		lineageTag: 5a672742-1e77-482d-9542-f3f4907b2533
+
+	measure 'Cor Var Implantadas' = IF ( LEFT ( [Txt Var Implantadas], 1 ) = "+", "#1F7A5C", "#B1820B" )
+		displayFolder: _Design\Formatação
+		lineageTag: d086d537-9bd9-4b79-b243-1dea30ebcf78
+
+	measure 'Cor Var Autores' = IF ( LEFT ( [Txt Var Autores], 1 ) = "+", "#1F7A5C", "#B1820B" )
+		displayFolder: _Design\Formatação
+		lineageTag: d34f397d-d634-45b7-8a27-4a1a2b9cc0f7
+
+	measure 'Sel Etapa' = SELECTEDVALUE ( Sel_Etapa[Etapa] )
+		displayFolder: _Design\Seleção
+		lineageTag: 3580c231-fe7c-73db-2d56-f8db409a1bba
+
+	measure 'Flag Etapa' = VAR __s = [Sel Etapa] RETURN IF ( ISBLANK ( __s ), 1, IF ( SELECTEDVALUE ( Fato_Ideias[Etapa_Atual] ) = __s, 1, 0 ) )
+		displayFolder: _Design\Seleção
+		lineageTag: 142f156d-9061-b8ae-764f-9e2a10e5b88e
+
+	measure 'Qtd Ideias 0' = [Qtd Ideias] + 0
+		formatString: #,0
+		displayFolder: _Design\Nativo
+		lineageTag: 1d4baf20-901d-09bf-8cdc-d1fd9333d644
+
+	measure 'Qtd Implantadas 0' = [Qtd Implantadas] + 0
+		formatString: #,0
+		displayFolder: _Design\Nativo
+		lineageTag: 9b59bda8-4ac7-7e57-de65-d3ce5777b198
+
+	measure 'Cor Var Bg' = IF ( LEFT ( [Txt Var Cadastradas], 1 ) = "+", "#E6F2ED", "#E9F6FB" )
+		displayFolder: _Design\Nativo
+		lineageTag: 6bc24101-a188-465b-fb45-36ac63b8a4b9
+
+	measure 'Cor Var Implantadas Bg' = IF ( LEFT ( [Txt Var Implantadas], 1 ) = "+", "#E6F2ED", "#E9F6FB" )
+		displayFolder: _Design\Nativo
+		lineageTag: e352e37d-e5a1-5e33-e189-d78eff2caab8
+
+	measure 'Cor Var Autores Bg' = IF ( LEFT ( [Txt Var Autores], 1 ) = "+", "#E6F2ED", "#E9F6FB" )
+		displayFolder: _Design\Nativo
+		lineageTag: 92952d84-b0ff-2251-33c0-41e73e9370b3
+
+	measure 'KPI Taxa Aprovação' = [Taxa Aprovação]
+		formatString: 0.0%
+		displayFolder: _Design\Nativo
+		lineageTag: 4227dce6-7323-29a0-b3e1-98761e2e6a53
+
+	measure 'KPI Engajamento' = [Taxa_Engajamento (%)]
+		formatString: 0.0%
+		displayFolder: _Design\Nativo
+		lineageTag: c3e683fe-b2bb-1594-2bb5-f84ce26f7551
+
+	measure 'KPI Tempo Avaliação' = [Tempo Médio Avaliação]
+		formatString: 0" d"
+		displayFolder: _Design\Nativo
+		lineageTag: a042f391-e60a-3326-3684-701cc5e1c8c5
+
+	measure 'KPI Tempo Proposta' = [Tempo Médio Proposta]
+		formatString: 0" d"
+		displayFolder: _Design\Nativo
+		lineageTag: e17e36bd-f4c1-501c-c5bd-2c22d4331a1c
+
+	measure 'KPI Lead Time' = [Lead Time Médio]
+		formatString: 0" d"
+		displayFolder: _Design\Nativo
+		lineageTag: 5a4de177-6d5a-9ff1-be12-59d8b44c64b4
+
+	measure 'KPI Taxa Conversão' = [Taxa Conversão]
+		formatString: 0.0%
+		displayFolder: _Design\Nativo
+		lineageTag: fdb10b0a-e5ab-79fd-7d46-e3ce74984e08
+
+	measure 'KPI Ideias por Autor' = [Ideias por Autor]
+		formatString: 0
+		displayFolder: _Design\Nativo
+		lineageTag: f8cb253d-b8a3-b042-d219-4695ee33f7df
+
+	measure 'Txt Ideias Mes' = "ideias em " & FORMAT ( MAX ( Referencia[Hoje] ), "mmm/yy" )
+		displayFolder: _Design\Nativo
+		lineageTag: 1652543c-0283-972b-360e-1969b1b01153
+
+	measure 'Txt Desde Impl' = "desde " & FORMAT ( CALCULATE ( MIN ( Fato_Ideias[Data_Implantadas] ), Dim_Estado[Estados] = "Implantada" ), "mmm/yy" )
+		displayFolder: _Design\Nativo
+		lineageTag: ba22a240-0a6a-254e-168b-ce772cf6dd44
+
+	measure 'Txt Engajamento Colab' = FORMAT ( [Qtd_Engajados], "#,0" ) & " de " & FORMAT ( [Qtd_Funcionarios], "#,0" ) & " participaram"
+		displayFolder: _Design\Nativo
+		lineageTag: d8ae773c-a1e1-beab-17d3-7ad2b5ad05fb
+
+	measure 'Txt Previsto' = VAR __v = [Valor Previsto] + 0 RETURN IF ( __v >= 1000000, "R$ " & FORMAT ( __v / 1000000, "0.0" ) & " mi", "R$ " & FORMAT ( __v / 1000, "#,0" ) & " mil" )
+		displayFolder: _Design\Nativo
+		lineageTag: 0b002835-206d-e041-81e0-af2acba3f978
+
+	measure 'Txt Investido' = VAR __v = [Valor Investido] + 0 RETURN IF ( __v >= 1000000, "R$ " & FORMAT ( __v / 1000000, "0.0" ) & " mi", "R$ " & FORMAT ( __v / 1000, "#,0" ) & " mil" )
+		displayFolder: _Design\Nativo
+		lineageTag: aeadb0a7-d359-5740-cbd4-d50abf50150b
+
+	measure 'Txt Ganho' = VAR __v = [Ganho Previsto 12m] + 0 RETURN IF ( __v >= 1000000, "R$ " & FORMAT ( __v / 1000000, "0.0" ) & " mi", "R$ " & FORMAT ( __v / 1000, "#,0" ) & " mil" )
+		displayFolder: _Design\Nativo
+		lineageTag: 1f702deb-a82c-47b0-8753-7faad92ff8cf
+
+	measure 'Txt Periodo' = VAR __a = IF ( ISFILTERED ( dCalendario[Date] ), MIN ( dCalendario[Date] ), CALCULATE ( MIN ( Dim_Data[Data_de_Criacao] ), ALL ( Dim_Data ) ) ) VAR __b = IF ( ISFILTERED ( dCalendario[Date] ), MAX ( dCalendario[Date] ), MAX ( Referencia[Hoje] ) ) RETURN UPPER ( LEFT ( FORMAT ( __a, "mmm/yy" ), 1 ) ) & MID ( FORMAT ( __a, "mmm/yy" ), 2, 10 ) & " – " & UPPER ( LEFT ( FORMAT ( __b, "mmm/yy" ), 1 ) ) & MID ( FORMAT ( __b, "mmm/yy" ), 2, 10 )
+		displayFolder: _Design\Nativo
+		lineageTag: 16b27b02-ba73-9fae-cb2a-5a0545bd8078
+
+	measure 'Txt Empresa Sel' = IF ( ISFILTERED ( Dim_Empresa_Campanha[Empresa_Sigla] ), IF ( HASONEVALUE ( Dim_Empresa_Campanha[Empresa_Sigla] ), VALUES ( Dim_Empresa_Campanha[Empresa_Sigla] ), "Várias" ), "Todas" )
+		displayFolder: _Design\Nativo
+		lineageTag: f2022dbe-2273-28ff-2c46-09b0ae423a18
+
+	measure 'Txt Campanha Sel' = IF ( ISFILTERED ( Dim_Empresa_Campanha[Campanha_Nome] ), IF ( HASONEVALUE ( Dim_Empresa_Campanha[Campanha_Nome] ), VALUES ( Dim_Empresa_Campanha[Campanha_Nome] ), "Várias" ), "Todas" )
+		displayFolder: _Design\Nativo
+		lineageTag: c6e965c2-a7e9-fe84-1d7b-320222cfade4
+
+	measure 'Ring Engajamento' = MIN ( MAX ( [Taxa_Engajamento (%)], 0 ), 1 )
+		formatString: 0.0%
+		displayFolder: _Design\Nativo
+		lineageTag: d5cebf06-d4d2-5645-c595-2fad18883f3e
+
+	measure 'Ring Engajamento Resto' = 1 - [Ring Engajamento]
+		formatString: 0.0%
+		displayFolder: _Design\Nativo
+		lineageTag: dedc5abd-32e2-3ee9-340c-2637a34122e8
+
+	measure 'Ring Paradas' = MIN ( MAX ( [% Paradas], 0 ), 1 )
+		formatString: 0%
+		displayFolder: _Design\Nativo
+		lineageTag: dbdc94d9-b2b2-e912-1f0c-96b3347304a8
+
+	measure 'Ring Paradas Resto' = 1 - [Ring Paradas]
+		formatString: 0%
+		displayFolder: _Design\Nativo
+		lineageTag: 934c4365-0c7b-bbdf-2613-c8f2dd91b8dd
+
+	measure 'Ring Conversão' = MIN ( MAX ( [Taxa Conversão], 0 ), 1 )
+		formatString: 0.0%
+		displayFolder: _Design\Nativo
+		lineageTag: e94ad09e-9350-907e-6424-bbbbd51718f9
+
+	measure 'Ring Conversão Resto' = 1 - [Ring Conversão]
+		formatString: 0.0%
+		displayFolder: _Design\Nativo
+		lineageTag: 4eddf18b-518b-b9c8-d4d2-f5987f840245
+
+	measure 'Ring Investimento' = MIN ( MAX ( DIVIDE ( [Ideias com Investimento], [Qtd Ideias] ), 0 ), 1 )
+		formatString: 0.0%
+		displayFolder: _Design\Nativo
+		lineageTag: 96085bfc-d5d1-6fc5-df08-6321736c655f
+
+	measure 'Ring Investimento Resto' = 1 - [Ring Investimento]
+		formatString: 0.0%
+		displayFolder: _Design\Nativo
+		lineageTag: 7e6386d6-293a-ac09-e039-11c12ef35eed
+
+	measure 'Ring Autores' = MIN ( MAX ( [% Autores com Implantada], 0 ), 1 )
+		formatString: 0.0%
+		displayFolder: _Design\Nativo
+		lineageTag: aa5a62c0-012d-60f4-32cf-1545b776c014
+
+	measure 'Ring Autores Resto' = 1 - [Ring Autores]
+		formatString: 0.0%
+		displayFolder: _Design\Nativo
+		lineageTag: 9f0c3b71-949f-79d6-4130-cc66a2ffa1fd
+
+	measure 'Evo Criadas' = IF ( SELECTEDVALUE ( Sel_Evolucao[Opcao], "Criadas" ) IN { "Criadas", "Comparar" }, [Qtd Ideias] + 0 )
+		formatString: #,0
+		displayFolder: _Design\Nativo
+		lineageTag: 5e507baa-a022-b62f-29df-8a797a93059a
+
+	measure 'Evo Implantadas' = IF ( SELECTEDVALUE ( Sel_Evolucao[Opcao], "Criadas" ) IN { "Implantadas", "Comparar" }, [Implantadas por Data] + 0 )
+		formatString: #,0
+		displayFolder: _Design\Nativo
+		lineageTag: 37436c47-a504-118a-898d-192c8d3bc2c3
+
+	measure 'J Qtd' = VAR __s = SELECTEDVALUE ( Sel_Etapa[Etapa] ) RETURN CALCULATE ( [Qtd Ideias], Fato_Ideias[Etapa_Atual] = __s ) + 0
+		formatString: #,0
+		displayFolder: _Design\Nativo
+		lineageTag: 7e95a28b-06c1-1560-7d1b-a2ab1f2dc953
+
+	measure 'J Max' = MAX ( MAXX ( FILTER ( ALL ( Sel_Etapa ), Sel_Etapa[Ordem] <= 6 ), [J Qtd] ), 1 )
+		formatString: 0
+		displayFolder: _Design\Nativo
+		lineageTag: c02fcaa2-e935-9b5f-3c4b-b0d4a112c575
+
+	measure 'J Frac' = DIVIDE ( [J Qtd], [J Max] ) + 0
+		formatString: 0.00
+		displayFolder: _Design\Nativo
+		lineageTag: c12c4480-3f47-b55e-4530-62dd1597d5ef
+
+	measure 'J Wine' = IF ( SELECTEDVALUE ( Sel_Etapa[Etapa] ) = "Implantada", 0, [J Frac] )
+		formatString: 0.00
+		displayFolder: _Design\Nativo
+		lineageTag: 306c5e65-4411-9000-2f52-86dac44d7887
+
+	measure 'J Green' = IF ( SELECTEDVALUE ( Sel_Etapa[Etapa] ) = "Implantada", [J Frac], 0 )
+		formatString: 0.00
+		displayFolder: _Design\Nativo
+		lineageTag: 272f11f0-fabe-85d9-6207-b435977d39e4
+
+	measure 'J Track' = 1 - [J Frac]
+		formatString: 0.00
+		displayFolder: _Design\Nativo
+		lineageTag: 7086407e-8bd0-cbe4-8880-a00acbec3d74
+
+	measure 'Qtd Etapa Pct' = DIVIDE ( [Qtd Ideias], CALCULATE ( [Qtd Ideias], REMOVEFILTERS ( Fato_Ideias[Etapa_Atual] ), REMOVEFILTERS ( Dim_Estado ) ) ) + 0
+		formatString: 0.0%
+		displayFolder: _Design\Nativo
+		lineageTag: c7f4499c-342e-3c52-d662-266349dc9961
+
+	measure 'Qtd Sel Etapa' = VAR __s = [Sel Etapa] RETURN IF ( ISBLANK ( __s ), [Qtd Ideias], CALCULATE ( [Qtd Ideias], Fato_Ideias[Etapa_Atual] = __s ) ) + 0
+		formatString: #,0
+		displayFolder: _Design\Nativo
+		lineageTag: 2a765b19-e1d0-0405-7fe1-eb57c4753486
+
+	measure 'Txt Titulo Lista' = VAR __s = [Sel Etapa] RETURN IF ( ISBLANK ( __s ), "Ideias em todas as etapas", "Ideias em " & __s )
+		displayFolder: _Design\Nativo
+		lineageTag: 829506dc-e1a1-6b58-3518-ebc3d696baad
+
+	measure 'Txt Sub Lista' = FORMAT ( [Qtd Sel Etapa], "#,0" ) & " ideias · mais tempo na etapa primeiro"
+		displayFolder: _Design\Nativo
+		lineageTag: 4eb3fd64-e53d-e3c4-2c88-2a38df5eb925
+
+	measure 'Txt Etapa Sel' = VAR __s = [Sel Etapa] RETURN IF ( ISBLANK ( __s ), "Todas as etapas", __s )
+		displayFolder: _Design\Nativo
+		lineageTag: b2e81bc5-6d82-43db-2a95-87caf84c58da
+
+	measure 'Mov Qtd' = VAR __m = SELECTEDVALUE ( Sel_Mes[Mes_Relativo], "Mês atual" ) RETURN CALCULATE ( COUNTROWS ( Dim_SLA_Ideias ), KEEPFILTERS ( Dim_SLA_Ideias[Mes_Relativo] = __m ), KEEPFILTERS ( NOT ISBLANK ( Dim_SLA_Ideias[Movimento] ) ) ) + 0
+		formatString: #,0
+		displayFolder: _Design\Nativo
+		lineageTag: 6dd71c91-bdf6-3ff2-43b7-4bbee979f285
+
+	measure 'Mov Max' = MAX ( MAXX ( ALLSELECTED ( Dim_SLA_Ideias[Movimento] ), [Mov Qtd] ), 1 )
+		formatString: 0
+		displayFolder: _Design\Nativo
+		lineageTag: 37555820-7d53-5422-6062-5fe3d292a9fc
+
+	measure 'Mov Frac' = DIVIDE ( [Mov Qtd], [Mov Max] ) + 0
+		formatString: 0.00
+		displayFolder: _Design\Nativo
+		lineageTag: b9cd0ab6-68ca-f0d0-4a01-a49b8a722b0f
+
+	measure 'Mov Destino' = MAX ( Dim_SLA_Ideias[Etapa_Curta] )
+		displayFolder: _Design\Nativo
+		lineageTag: f04b6b29-c167-8bf9-aa92-a6d4f80628ce
+
+	measure 'Mov Origem' = MAX ( Dim_SLA_Ideias[Etapa_Anterior] )
+		displayFolder: _Design\Nativo
+		lineageTag: 84f53017-7a94-7487-ba1f-5332a52a255f
+
+	measure 'Mov Wine' = IF ( [Mov Destino] IN { "Implantada", "Reprovada", "Banco de Ideias" }, 0, [Mov Frac] )
+		formatString: 0.00
+		displayFolder: _Design\Nativo
+		lineageTag: 6632b94f-442a-2653-942a-e4ddb1089b96
+
+	measure 'Mov Green' = IF ( [Mov Destino] = "Implantada", [Mov Frac], 0 )
+		formatString: 0.00
+		displayFolder: _Design\Nativo
+		lineageTag: cdc70551-0b60-2c4f-b1cd-cc83de43c2c6
+
+	measure 'Mov Red' = IF ( [Mov Destino] = "Reprovada", [Mov Frac], 0 )
+		formatString: 0.00
+		displayFolder: _Design\Nativo
+		lineageTag: cd3a68b5-baa9-4c6c-e605-130590f1463c
+
+	measure 'Mov Gray' = IF ( [Mov Destino] = "Banco de Ideias", [Mov Frac], 0 )
+		formatString: 0.00
+		displayFolder: _Design\Nativo
+		lineageTag: de4eb160-66ef-277a-0c88-e24013db05ab
+
+	measure 'Mov Track' = 1 - [Mov Frac]
+		formatString: 0.00
+		displayFolder: _Design\Nativo
+		lineageTag: f1c6a41c-d326-4061-6f32-b110692c1fc1
+
+	measure 'Txt Mov Destino' = "→   " & [Mov Destino]
+		displayFolder: _Design\Nativo
+		lineageTag: 2f57197e-81aa-5c72-e948-53bb71c67375
+
+	measure 'Txt Mov Mes' = LOWER ( SELECTEDVALUE ( Sel_Mes[Opcao], FORMAT ( MAX ( Referencia[Hoje] ), "mmm/yy" ) ) )
+		displayFolder: _Design\Nativo
+		lineageTag: bca0371e-d5c4-64eb-b766-a1fb82dab56b
+
+	measure 'Txt Mov Chip' = FORMAT ( [Mov Qtd], "#,0" ) & " ideias"
+		displayFolder: _Design\Nativo
+		lineageTag: ddfbd970-b194-8a8c-7ad6-e41e97da3253
+
+	measure 'Txt Mov Sub' = VAR __mv = IF ( HASONEVALUE ( Dim_SLA_Ideias[Movimento] ), SUBSTITUTE ( VALUES ( Dim_SLA_Ideias[Movimento] ), "  →  ", " → " ), "Todas as mudanças" ) RETURN __mv & " · " & FORMAT ( [Mov Qtd], "#,0" ) & " ideias em " & [Txt Mov Mes]
+		displayFolder: _Design\Nativo
+		lineageTag: 349b5a4d-b8d7-c711-9dbc-185968c4d4bc
+
+	measure 'Tempo Etapa Sel' = VAR __s = SELECTEDVALUE ( Sel_Etapa[Etapa] ) RETURN CALCULATE ( AVERAGE ( Dim_SLA_Ideias[Dias_na_Etapa] ), Dim_SLA_Ideias[Etapa_Curta] = __s )
+		formatString: 0.0
+		displayFolder: _Design\Nativo
+		lineageTag: 8352e576-6dbd-d5bc-2572-c82c2d53fcc7
+
+	measure 'Cor Tempo Etapa' = IF ( [Tempo Etapa Sel] > [SLA Etapa (dias)], "#B1820B", "#3A5A67" )
+		displayFolder: _Design\Nativo
+		lineageTag: ab34296e-76b3-87f6-77e9-787c76c1ae2b
+
+	measure 'HM Max' = MAX ( MAXX ( FILTER ( CROSSJOIN ( ALL ( Dim_SLA_Ideias[Etapa_Curta] ), ALL ( Dim_SLA_Ideias[Faixa_Dias] ) ), Dim_SLA_Ideias[Etapa_Curta] IN { "Avaliação", "Proposta de Solução", "Aprovada", "Em Implantação", "Validação" } ), CALCULATE ( [Ideias na Faixa] ) ), 1 )
+		formatString: 0
+		displayFolder: _Design\Nativo
+		lineageTag: 90d8844d-5700-78b5-b8f0-bea1a7899939
+
+	measure 'HM Alpha' = IF ( [Ideias na Faixa] = 0, 0, 0.14 + 0.86 * DIVIDE ( [Ideias na Faixa], [HM Max] ) )
+		formatString: 0.00
+		displayFolder: _Design\Nativo
+		lineageTag: 2f728beb-e293-adf7-0156-0401cca93bbb
+
+	measure 'HM Bg' = VAR __h = "0123456789ABCDEF" VAR __a = [HM Alpha] VAR __r = ROUND ( 255 - __a * 216, 0 ) VAR __g = ROUND ( 255 - __a * 150, 0 ) VAR __b = ROUND ( 255 - __a * 124, 0 ) RETURN IF ( [Ideias na Faixa] = 0, "#F7F7F9", "#" & MID ( __h, INT ( __r / 16 ) + 1, 1 ) & MID ( __h, MOD ( __r, 16 ) + 1, 1 ) & MID ( __h, INT ( __g / 16 ) + 1, 1 ) & MID ( __h, MOD ( __g, 16 ) + 1, 1 ) & MID ( __h, INT ( __b / 16 ) + 1, 1 ) & MID ( __h, MOD ( __b, 16 ) + 1, 1 ) )
+		displayFolder: _Design\Nativo
+		lineageTag: dc09cca3-d36e-9b10-03c9-e769e92d155c
+
+	measure 'HM Fg' = IF ( [Ideias na Faixa] = 0, "#9AA0AD", IF ( [HM Alpha] > 0.5, "#FFFFFF", "#1E1F24" ) )
+		displayFolder: _Design\Nativo
+		lineageTag: 9cbcaaed-bf41-c9d7-f2e6-d91032497603
+
+	measure 'Impl Evo' = IF ( SELECTEDVALUE ( Sel_Implantadas[Opcao], "Por mês" ) = "Acumulado", [Implantadas Acumulado], [Implantadas por Data] + 0 )
+		formatString: #,0
+		displayFolder: _Design\Nativo
+		lineageTag: a7d88b5d-cf9b-775f-e269-f5c7c0898a89
+
+	measure 'Impl Max' = MAX ( MAXX ( ALLSELECTED ( Fato_Ideias[Empresa_Sigla] ), [Qtd Implantadas 0] ), 1 )
+		formatString: 0
+		displayFolder: _Design\Nativo
+		lineageTag: ba1c29c3-40c6-13e8-522a-6059fcf45084
+
+	measure 'Impl Frac' = DIVIDE ( [Qtd Implantadas 0], [Impl Max] ) + 0
+		formatString: 0.00
+		displayFolder: _Design\Nativo
+		lineageTag: 62f69919-d308-39dd-f5d0-177c94994964
+
+	measure 'Impl Track' = 1 - [Impl Frac]
+		formatString: 0.00
+		displayFolder: _Design\Nativo
+		lineageTag: 661d7df9-4bb9-b820-5336-0f040463d4d6
+
+	measure 'Cor Tema' = VAR __r = RANKX ( ALLSELECTED ( Dim_Tema[Nome_tema] ), [Qtd Implantadas 0],, DESC, Dense ) RETURN SWITCH ( __r, 1, "#276983", 2, "#3A5A67", 3, "#2E62AD", 4, "#5A8B9E", "#7C8190" )
+		displayFolder: _Design\Nativo
+		lineageTag: 32abc984-7129-c64d-1f3b-ba0231b9dcc1
+
+	measure 'Txt Sub Impl Lista' = FORMAT ( [Qtd Implantadas 0], "#,0" ) & " ideias · " & IF ( ISFILTERED ( Fato_Ideias[Empresa_Sigla] ), IF ( HASONEVALUE ( Fato_Ideias[Empresa_Sigla] ), VALUES ( Fato_Ideias[Empresa_Sigla] ), "várias empresas" ), "todas as empresas" ) & IF ( ISFILTERED ( Dim_Tema[Nome_tema] ), " · tema selecionado", " e temas" ) & " · mais recentes primeiro"
+		displayFolder: _Design\Nativo
+		lineageTag: 344f2bc7-609e-0512-89b3-e35d129cf201
+
+	measure 'Gn Max' = MAX ( MAXX ( ALLSELECTED ( Dim_Ganhos_Indiretos[Ganho_Curto] ), [Menções Ganhos] + 0 ), 1 )
+		formatString: 0
+		displayFolder: _Design\Nativo
+		lineageTag: ea514cb4-e8e3-4c65-4553-453f48b8ea8e
+
+	measure 'Gn Frac' = DIVIDE ( [Menções Ganhos] + 0, [Gn Max] ) + 0
+		formatString: 0.00
+		displayFolder: _Design\Nativo
+		lineageTag: ce255382-ee94-bca6-6648-7e29e61f7f17
+
+	measure 'Gn Track' = 1 - [Gn Frac]
+		formatString: 0.00
+		displayFolder: _Design\Nativo
+		lineageTag: 10d32821-5eea-62f6-d499-c77ab78d3adb
+
+	measure 'Menções Ganhos 0' = [Menções Ganhos] + 0
+		formatString: #,0
+		displayFolder: _Design\Nativo
+		lineageTag: 5ec592d6-715e-5fb6-36fc-9f11a6435558
+
+	measure 'Prev Frac EmImpl' = DIVIDE ( CALCULATE ( [Valor Previsto], Fato_Ideias[Etapa_Atual] = "Em Implantação" ), [Valor Previsto] ) + 0
+		formatString: 0.00
+		displayFolder: _Design\Nativo
+		lineageTag: cdfcc57a-99fa-c0f8-f70a-9f3ee8aafbbf
+
+	measure 'Prev Frac Impl' = DIVIDE ( CALCULATE ( [Valor Previsto], Fato_Ideias[Etapa_Atual] = "Implantada" ), [Valor Previsto] ) + 0
+		formatString: 0.00
+		displayFolder: _Design\Nativo
+		lineageTag: e1e95d1c-b2c3-7af7-3814-26195a456fa8
+
+	measure 'Prev Frac Banco' = DIVIDE ( CALCULATE ( [Valor Previsto], Fato_Ideias[Etapa_Atual] = "Banco de Ideias" ), [Valor Previsto] ) + 0
+		formatString: 0.00
+		displayFolder: _Design\Nativo
+		lineageTag: d5e18a75-bd20-0b72-7974-9f9a00efbda1
+
+	measure 'Prev Frac Resto' = 1 - [Prev Frac EmImpl] - [Prev Frac Impl] - [Prev Frac Banco]
+		formatString: 0.00
+		displayFolder: _Design\Nativo
+		lineageTag: c8bb3287-2c25-8f65-39a9-b5ba314d81b5
+
+	measure 'Fin Previsto' = [Valor Previsto] + 0
+		formatString: #,0
+		displayFolder: _Design\Nativo
+		lineageTag: fc4ec693-a2d1-de4f-0385-4b923c8b9a20
+
+	measure 'Prev Mil' = DIVIDE ( [Valor Previsto], 1000000 ) + 0
+		formatString: #,0.0" mi"
+		displayFolder: _Design\Nativo
+		lineageTag: 8c887de0-f111-8ed5-b364-06332b835617
+
+	measure 'Inv Mil' = DIVIDE ( [Valor Investido], 1000000 ) + 0
+		formatString: #,0.0" mi"
+		displayFolder: _Design\Nativo
+		lineageTag: cc94f4b8-a00b-ebe6-0ef1-1429d7ffdc38
+
+	measure 'Ganho Mil' = DIVIDE ( [Ganho Previsto 12m], 1000000 ) + 0
+		formatString: #,0.0" mi"
+		displayFolder: _Design\Nativo
+		lineageTag: 6b34358b-c347-e7c2-3a68-ce6bbd98ae79
+
+	measure 'Faixa Pct' = DIVIDE ( [Ideias com Valor (faixa)], CALCULATE ( [Ideias com Valor (faixa)], REMOVEFILTERS ( Dim_Valores[Faixa] ) ) ) + 0
+		formatString: 0%
+		displayFolder: _Design\Nativo
+		lineageTag: c7fa0a8f-2661-4bcb-c035-0d96f4880a95
+
+	measure 'Ideias com Valor 0' = [Ideias com Valor (faixa)] + 0
+		formatString: #,0
+		displayFolder: _Design\Nativo
+		lineageTag: 884258ea-07ea-c584-5578-36a36e1226db
+
+	measure 'Txt Sub Fin Lista' = FORMAT ( [Ideias com Investimento], "#,0" ) & " ideias · todos os status · ordenado pelo previsto (R$)"
+		displayFolder: _Design\Nativo
+		lineageTag: bce2a174-4b9f-b59c-91f2-b1cbde030e71
+
+	measure 'Onde Max' = MAX ( MAXX ( ALL ( Fato_Ideias[Etapa_Atual], Fato_Ideias[Etapa_Atual_Ordem] ), [Valor Previsto] + 0 ), 1 )
+		formatString: 0
+		displayFolder: _Design\Nativo
+		lineageTag: 69d7ab29-6373-67e0-3a7c-424c0f3c900f
+
+	measure 'Onde Frac' = DIVIDE ( [Valor Previsto] + 0, [Onde Max] ) + 0
+		formatString: 0.00
+		displayFolder: _Design\Nativo
+		lineageTag: 0ef1fe0f-be42-f955-dac4-e5373534c2bc
+
+	measure 'Onde Wine' = IF ( SELECTEDVALUE ( Fato_Ideias[Etapa_Atual] ) IN { "Em Implantação" }, [Onde Frac], 0 )
+		formatString: 0.00
+		displayFolder: _Design\Nativo
+		lineageTag: 30c520ea-77f1-15fc-8139-88d579e80b24
+
+	measure 'Onde Green' = IF ( SELECTEDVALUE ( Fato_Ideias[Etapa_Atual] ) = "Implantada", [Onde Frac], 0 )
+		formatString: 0.00
+		displayFolder: _Design\Nativo
+		lineageTag: 06028b8c-45df-290e-5c49-d6ddf339b789
+
+	measure 'Onde Gray' = IF ( SELECTEDVALUE ( Fato_Ideias[Etapa_Atual] ) = "Banco de Ideias", [Onde Frac], 0 )
+		formatString: 0.00
+		displayFolder: _Design\Nativo
+		lineageTag: 6fa6a26f-6261-0747-359c-b5929563b1e9
+
+	measure 'Onde Pink' = IF ( SELECTEDVALUE ( Fato_Ideias[Etapa_Atual] ) IN { "Em Implantação", "Implantada", "Banco de Ideias" }, 0, [Onde Frac] )
+		formatString: 0.00
+		displayFolder: _Design\Nativo
+		lineageTag: 03e9b8d2-d86e-9dd3-0091-82193ec46db6
+
+	measure 'Onde Track' = 1 - [Onde Frac]
+		formatString: 0.00
+		displayFolder: _Design\Nativo
+		lineageTag: a8d9687d-e36d-b31f-222b-cf1ad45617f5
+
+	measure 'Txt Onde Valor' = "R$ " & FORMAT ( DIVIDE ( [Valor Previsto] + 0, 1000000 ), "0.0" ) & " mi"
+		displayFolder: _Design\Nativo
+		lineageTag: 1001cb27-8b51-b07c-b77a-5fba3bdd1e0f
+
+	measure 'Txt Onde Ideias' = VAR __n = [Ideias com Investimento] RETURN FORMAT ( __n, "0" ) & IF ( __n = 1, " ideia", " ideias" )
+		displayFolder: _Design\Nativo
+		lineageTag: 818a4980-a83b-0a81-8a5f-65cd8c013148
+
+	measure 'Rank Valor' = IF ( SELECTEDVALUE ( Sel_Ranking[Opcao], "Mais implantadas" ) = "Mais ideias", [Qtd Ideias] * 1000 + [Qtd Implantadas 0], [Qtd Implantadas 0] * 1000 + [Qtd Ideias] )
+		formatString: 0
+		displayFolder: _Design\Nativo
+		lineageTag: 7a05e45d-80ea-96ca-427f-4748ca91103e
+
+	measure 'Top Max' = MAX ( MAXX ( ALLSELECTED ( Dim_Elaborador[Nome_elaborador] ), [Qtd Ideias] + 0 ), 1 )
+		formatString: 0
+		displayFolder: _Design\Nativo
+		lineageTag: 3d5e99d0-9312-e645-c625-76e19b80d2be
+
+	measure 'Top Impl Frac' = DIVIDE ( [Qtd Implantadas 0], [Top Max] ) + 0
+		formatString: 0.00
+		displayFolder: _Design\Nativo
+		lineageTag: 5438a096-2703-7701-6ae9-539f70edf5b1
+
+	measure 'Top Ideias Frac' = DIVIDE ( [Qtd Ideias] - [Qtd Implantadas 0], [Top Max] ) + 0
+		formatString: 0.00
+		displayFolder: _Design\Nativo
+		lineageTag: 007ba54c-8927-e1a3-f7e3-56ff3ecad65e
+
+	measure 'Top Track' = 1 - [Top Impl Frac] - [Top Ideias Frac]
+		formatString: 0.00
+		displayFolder: _Design\Nativo
+		lineageTag: 7bdcde3f-7c7e-eb9f-79b4-07a2c4689384
+
+	measure 'Txt Top Qtd' = FORMAT ( [Qtd Implantadas 0], "0" ) & " / " & FORMAT ( [Qtd Ideias], "0" )
+		displayFolder: _Design\Nativo
+		lineageTag: ad19eba1-a90b-fb5b-8108-6756d49f3f21
+
+	measure 'Txt Top Pct' = FORMAT ( DIVIDE ( [Qtd Implantadas 0], [Qtd Ideias] ), "0%" )
+		displayFolder: _Design\Nativo
+		lineageTag: d9cf29c1-1e21-4380-4e68-c56d2a702ce0
+
+	measure 'Empresa Pessoa' = MAX ( Fato_Ideias[Empresa_Sigla] )
+		displayFolder: _Design\Nativo
+		lineageTag: 8be19503-9505-777e-55e4-74fcef61f188
+
+	measure 'Eng Meta' = 0.5
+		formatString: 0%
+		displayFolder: _Design\Nativo
+		lineageTag: 2dbcb460-b788-7f45-723d-9d4ba4bf2a8c
+
+	measure 'Eng Escala' = 0.5
+		formatString: 0%
+		displayFolder: _Design\Nativo
+		lineageTag: baa20b1c-44e5-8d10-f5c5-8ea4c0848eb6
+
+	measure 'Eng Frac' = MIN ( DIVIDE ( [Taxa_Engajamento (%)], [Eng Escala] ), 1 ) + 0
+		formatString: 0.00
+		displayFolder: _Design\Nativo
+		lineageTag: 9360e8c5-56ea-5c9f-f6c6-fb143655e5a7
+
+	measure 'Eng Blue' = IF ( [Taxa_Engajamento (%)] >= [Eng Meta], [Eng Frac], 0 )
+		formatString: 0.00
+		displayFolder: _Design\Nativo
+		lineageTag: d2668e83-843d-9b4f-d9a6-41811ec1ddfc
+
+	measure 'Eng Blue Light' = IF ( [Taxa_Engajamento (%)] >= [Eng Meta], 0, [Eng Frac] )
+		formatString: 0.00
+		displayFolder: _Design\Nativo
+		lineageTag: c76718db-7dfa-692e-521b-efcebbdf4321
+
+	measure 'Eng Track' = 1 - [Eng Frac]
+		formatString: 0.00
+		displayFolder: _Design\Nativo
+		lineageTag: db4ab1d7-55a2-69da-d902-cc8e366031df
+
+	measure 'Txt Eng Pct' = FORMAT ( [Taxa_Engajamento (%)], "0.0%" )
+		displayFolder: _Design\Nativo
+		lineageTag: d75bf944-c128-6d88-b088-b82100a3ea1f
+
+	measure 'Txt Eng De' = FORMAT ( [Qtd_Engajados], "#,0" ) & " de " & FORMAT ( [Qtd_Funcionarios], "#,0" )
+		displayFolder: _Design\Nativo
+		lineageTag: 8e91206b-6988-ace4-c65c-29dc2cd4c40e
+
+	measure 'Autores na Faixa' = VAR __lo = SELECTEDVALUE ( Faixa_Autor[Min] ) VAR __hi = SELECTEDVALUE ( Faixa_Autor[Max] ) RETURN COUNTROWS ( FILTER ( VALUES ( Dim_Elaborador[Nome_elaborador] ), VAR __n = CALCULATE ( [Qtd Ideias] ) RETURN __n >= __lo && __n <= __hi ) ) + 0
+		formatString: #,0
+		displayFolder: _Design\Nativo
+		lineageTag: 9e951ad0-e1b4-50a1-2ac9-fb41a4dca340
+
+	measure 'Txt Iniciais' = IF ( HASONEVALUE ( Dim_Elaborador[Nome_elaborador] ), VAR __n = TRIM ( VALUES ( Dim_Elaborador[Nome_elaborador] ) ) VAR __p = SEARCH ( " ", __n, 1, 0 ) RETURN UPPER ( LEFT ( __n, 1 ) & IF ( __p > 0, MID ( __n, __p + 1, 1 ), "" ) ), "•" )
+		displayFolder: _Design\Nativo
+		lineageTag: 820c875f-3f21-1106-6581-acba8f97b696
+
+	measure 'Txt Pessoa Sub Emp' = IF ( HASONEVALUE ( Dim_Elaborador[Nome_elaborador] ), [Empresa Pessoa] & " · ", "" ) & [Txt Pessoa Sub]
+		displayFolder: _Design\Nativo
+		lineageTag: eb850100-5317-d939-508e-4095a5e7183b
+
+	measure 'Media Dias Sel' = VAR __s = [Sel Etapa] RETURN IF ( ISBLANK ( __s ), CALCULATE ( AVERAGE ( Fato_Ideias[Dias_Etapa_Atual] ), KEEPFILTERS ( Fato_Ideias[Etapa_Atual] IN { "Avaliação", "Proposta de Solução", "Aprovada", "Em Implantação", "Validação" } ) ), CALCULATE ( AVERAGE ( Fato_Ideias[Dias_Etapa_Atual] ), Fato_Ideias[Etapa_Atual] = __s ) )
+		formatString: 0" d"
+		displayFolder: _Design\Nativo
+		lineageTag: a01837d2-33af-f68c-6b4a-8e42d10da083
+
+	measure 'Mais60 Sel' = VAR __s = [Sel Etapa] RETURN IF ( ISBLANK ( __s ), CALCULATE ( [Ideias +60 dias], KEEPFILTERS ( Fato_Ideias[Etapa_Atual] IN { "Avaliação", "Proposta de Solução", "Aprovada", "Em Implantação", "Validação" } ) ), CALCULATE ( [Ideias +60 dias], Fato_Ideias[Etapa_Atual] = __s ) ) + 0
+		formatString: #,0
+		displayFolder: _Design\Nativo
+		lineageTag: de25a7f7-e7d9-30fa-39bf-48e402600b1c
+
+	measure 'Res Emp Max' = MAX ( MAXX ( ALLSELECTED ( Fato_Ideias[Empresa_Sigla] ), [Qtd Sel Etapa] ), 1 )
+		formatString: 0
+		displayFolder: _Design\Nativo
+		lineageTag: 8c88a0ec-8cab-7b57-a1c6-27acc4566004
+
+	measure 'Res Emp Frac' = DIVIDE ( [Qtd Sel Etapa], [Res Emp Max] ) + 0
+		formatString: 0.00
+		displayFolder: _Design\Nativo
+		lineageTag: 99481eae-7087-4122-a360-aff2eeaac2bd
+
+	measure 'Res Emp Track' = 1 - [Res Emp Frac]
+		formatString: 0.00
+		displayFolder: _Design\Nativo
+		lineageTag: c8b30c1c-1a1d-57e0-c49d-987ec488c609
+
+	measure 'Res Veio Max' = MAX ( MAXX ( ALLSELECTED ( Fato_Ideias[Veio_De] ), [Qtd Sel Etapa] ), 1 )
+		formatString: 0
+		displayFolder: _Design\Nativo
+		lineageTag: dfdd4193-a878-cb22-0787-f1e63f05ab31
+
+	measure 'Res Veio Frac' = DIVIDE ( [Qtd Sel Etapa], [Res Veio Max] ) + 0
+		formatString: 0.00
+		displayFolder: _Design\Nativo
+		lineageTag: 11d018b4-40ae-613b-87fc-73d60280473a
+
+	measure 'Res Veio Track' = 1 - [Res Veio Frac]
+		formatString: 0.00
+		displayFolder: _Design\Nativo
+		lineageTag: 7b889d43-6080-3f47-bba0-21ad63548f67
+
+	measure 'Badge Qtd' = [Qtd Ideias] + 0
+		formatString: #,0
+		displayFolder: _Design\Nativo
+		lineageTag: 2b294a3f-accf-fc6e-acdc-737b11e9f6bd
+
+	measure 'Txt Chip Nome' = IF ( HASONEFILTER ( Fato_Ideias[Etapa_Atual] ), MAXX ( FILTERS ( Fato_Ideias[Etapa_Atual] ), Fato_Ideias[Etapa_Atual] ) )
+		displayFolder: _Design\Nativo
+		lineageTag: 214b78ec-800a-9d6d-3858-49a6f13b25ce
+
+	measure 'Chip Sel' = IF ( NOT ISBLANK ( [Sel Etapa] ) && [Txt Chip Nome] = [Sel Etapa], 1, 0 )
+		formatString: 0
+		displayFolder: _Design\Nativo
+		lineageTag: 26274596-4e76-b5b0-bb2c-8041509a8792
+
+	measure 'Cor Badge Bg' = IF ( [Chip Sel] = 1, "#4F869C", "#F3F4F7" )
+		displayFolder: _Design\Nativo
+		lineageTag: beb0d946-7c27-6084-c94a-29e9c4232956
+
+	measure 'Cor Badge Fg' = IF ( [Chip Sel] = 1, "#FFFFFF", "#5B6170" )
+		displayFolder: _Design\Nativo
+		lineageTag: 2708c643-77a1-d8f4-c495-0e1682179a4f
+
+	measure 'Cor Chip Fg' = IF ( [Chip Sel] = 1, "#FFFFFF", "#1E1F24" )
+		displayFolder: _Design\Nativo
+		lineageTag: 2d1b917f-95c7-109b-300f-45ecac0fc174
+
+	measure 'Cor Chip Bg' = IF ( [Chip Sel] = 1, "#276983", "#FFFFFF" )
+		displayFolder: _Design\Nativo
+		lineageTag: 9bd03662-a39e-7b1d-75ca-319ba98c21c4
+
+	measure 'Cor Chip Borda' = IF ( [Chip Sel] = 1, "#276983", "#E4E6EC" )
+		displayFolder: _Design\Nativo
+		lineageTag: 609401e9-a8b7-5d2f-27f8-a3bcef2ddddd
+
+	measure 'Txt Vazio' = UNICHAR ( 8203 )
+		displayFolder: _Design\Nativo
+		lineageTag: fb65dbd5-a058-382a-775e-829ff7697e05
+
+	measure 'K2 EmImpl' = IF ( SELECTEDVALUE ( Slot[Slot] ) = 3, [Prev Frac EmImpl], 0 )
+		formatString: 0.00
+		displayFolder: _Design\Nativo
+		lineageTag: 495d9b53-6b8c-bc96-add4-a09c56bf460e
+
+	measure 'K2 Impl' = IF ( SELECTEDVALUE ( Slot[Slot] ) = 3, [Prev Frac Impl], 0 )
+		formatString: 0.00
+		displayFolder: _Design\Nativo
+		lineageTag: 8a3afac7-ac78-158b-eea1-9e47ab71155b
+
+	measure 'K2 Banco' = IF ( SELECTEDVALUE ( Slot[Slot] ) = 3, [Prev Frac Banco], 0 )
+		formatString: 0.00
+		displayFolder: _Design\Nativo
+		lineageTag: 539e7623-9667-76f2-0811-0e993b742a67
+
+	measure 'K2 Resto' = IF ( SELECTEDVALUE ( Slot[Slot] ) = 3, [Prev Frac Resto], 0 )
+		formatString: 0.00
+		displayFolder: _Design\Nativo
+		lineageTag: 8ba4cbee-9494-675a-57ac-d4fc316c31d4
+
+	measure 'Txt Sub Ideias A' = FORMAT ( [Qtd Sel Etapa], "#,0" ) & " ideias · mais tempo na etapa primeiro · passe o mouse no título para ler completo"
+		displayFolder: _Design\Nativo
+		lineageTag: 7d8330f0-e617-aebe-951f-c6f45bb4ac32
+
+	measure 'Txt Sub Ideias B' = FORMAT ( [Qtd Sel Etapa], "#,0" ) & " ideias · mais recentes primeiro · passe o mouse no título para ler completo"
+		displayFolder: _Design\Nativo
+		lineageTag: 56f4403c-59bf-2309-7c42-264b822e4b45
+
+	measure 'Fin Bar Max' = MAX ( MAX ( [Valor Previsto] + 0, [Ganho Previsto 12m] + 0 ), 1 )
+		formatString: 0
+		displayFolder: _Design\Nativo
+		lineageTag: 43bafd0e-ad0e-c482-6338-b45e6cd45016
+
+	measure 'Fin Bar Prev' = DIVIDE ( [Valor Previsto] + 0, [Fin Bar Max] ) + 0
+		formatString: 0.00
+		displayFolder: _Design\Nativo
+		lineageTag: 18a571a9-fee6-51e5-778f-5aa7ef2cb25a
+
+	measure 'Fin Bar Ganho' = DIVIDE ( [Ganho Previsto 12m] + 0, [Fin Bar Max] ) + 0
+		formatString: 0.00
+		displayFolder: _Design\Nativo
+		lineageTag: d6ea9480-5e64-1e47-5ced-6cc49aee1421
+
+	measure 'K4 Prev' = IF ( SELECTEDVALUE ( Slot[Slot] ) = 3, [Fin Bar Prev], 0 )
+		formatString: 0.00
+		displayFolder: _Design\Nativo
+		lineageTag: a9f2bc52-fce0-62bc-a720-aed01c37d57e
+
+	measure 'K4 Ganho' = IF ( SELECTEDVALUE ( Slot[Slot] ) = 4, [Fin Bar Ganho], 0 )
+		formatString: 0.00
+		displayFolder: _Design\Nativo
+		lineageTag: 2b22566a-df58-1784-512d-a406a37125e6
+
+	measure 'Ring Engajamento Pie' = IF ( SELECTEDVALUE ( Parte[Parte] ) = "v", [Ring Engajamento], [Ring Engajamento Resto] )
+		formatString: 0.0%
+		displayFolder: _Design\Nativo
+		lineageTag: 90d9a103-0a8c-0e47-e453-7457dfcf796f
+
+	measure 'Ring Paradas Pie' = IF ( SELECTEDVALUE ( Parte[Parte] ) = "v", [Ring Paradas], [Ring Paradas Resto] )
+		formatString: 0.0%
+		displayFolder: _Design\Nativo
+		lineageTag: 2f1fefb3-ecc6-3b58-2367-7dc730bbbf5e
+
+	measure 'Sp Mov A' = 0.8876
+		formatString: 0.00
+		displayFolder: _Design\Nativo\Espaçadores
+		lineageTag: 61b491bc-bbf1-24ce-a4c9-0002ca635ba6
+
+	measure 'Sp Mov B' = 1.2169
+		formatString: 0.00
+		displayFolder: _Design\Nativo\Espaçadores
+		lineageTag: 006c0479-10ca-53a3-6970-fc3508e1a06f
+
+	measure 'Sp Mov R' = 0.2577
+		formatString: 0.00
+		displayFolder: _Design\Nativo\Espaçadores
+		lineageTag: 3e51e91c-e731-f605-151b-ac0730be006c
+
+	measure 'Ring Conversão Pie' = IF ( SELECTEDVALUE ( Parte[Parte] ) = "v", [Ring Conversão], [Ring Conversão Resto] )
+		formatString: 0.0%
+		displayFolder: _Design\Nativo
+		lineageTag: b15730d9-6713-ef6c-f178-8f95dff49074
+
+	measure 'Sp Emp L' = 0.518
+		formatString: 0.00
+		displayFolder: _Design\Nativo\Espaçadores
+		lineageTag: 900a9f32-c97a-ebe9-c775-cce08c7f49e7
+
+	measure 'Sp Emp R' = 0.3077
+		formatString: 0.00
+		displayFolder: _Design\Nativo\Espaçadores
+		lineageTag: 12638275-a3f5-55c4-5ca9-becd9b31490f
+
+	measure 'Sp Gn L' = 0.85
+		formatString: 0.00
+		displayFolder: _Design\Nativo\Espaçadores
+		lineageTag: f2c7f025-9eae-4210-0187-dd7cdfc1f275
+
+	measure 'Sp Gn R' = 0.288
+		formatString: 0.00
+		displayFolder: _Design\Nativo\Espaçadores
+		lineageTag: 95cbb88b-40ab-373b-bc7c-bec512d6682e
+
+	measure 'Ring Investimento Pie' = IF ( SELECTEDVALUE ( Parte[Parte] ) = "v", [Ring Investimento], [Ring Investimento Resto] )
+		formatString: 0.0%
+		displayFolder: _Design\Nativo
+		lineageTag: fef9fafc-e5ac-ab77-b22d-0cfafa8f7fc4
+
+	measure 'Sp Onde L' = 0.8123
+		formatString: 0.00
+		displayFolder: _Design\Nativo\Espaçadores
+		lineageTag: cff0573c-30ff-7adc-41df-aa20efafa078
+
+	measure 'Sp Onde R1' = 0.4062
+		formatString: 0.00
+		displayFolder: _Design\Nativo\Espaçadores
+		lineageTag: ebf193c9-82ad-83b0-62db-04eb1f01957d
+
+	measure 'Sp Onde R2' = 0.3815
+		formatString: 0.00
+		displayFolder: _Design\Nativo\Espaçadores
+		lineageTag: 68838747-0e79-c646-56b2-163f43ae7f1a
+
+	measure 'Ring Autores Pie' = IF ( SELECTEDVALUE ( Parte[Parte] ) = "v", [Ring Autores], [Ring Autores Resto] )
+		formatString: 0.0%
+		displayFolder: _Design\Nativo
+		lineageTag: ddd45766-dd62-d5f3-8939-84aa4bd39bc6
+
+	measure 'Sp Top L' = 0.818
+		formatString: 0.00
+		displayFolder: _Design\Nativo\Espaçadores
+		lineageTag: f719496b-44b9-a16c-e227-eafe83c70291
+
+	measure 'Sp Top R1' = 0.2649
+		formatString: 0.00
+		displayFolder: _Design\Nativo\Espaçadores
+		lineageTag: 2a35b018-e6f2-c4d6-eb17-5e8e399c9cf0
+
+	measure 'Sp Top R2' = 0.1792
+		formatString: 0.00
+		displayFolder: _Design\Nativo\Espaçadores
+		lineageTag: f6988b3d-8e1f-995e-95fb-014833fe183b
+
+	measure 'Sp Eng L' = 0.2506
+		formatString: 0.00
+		displayFolder: _Design\Nativo\Espaçadores
+		lineageTag: 990b1a5f-2064-e84e-b14e-d56616c67102
+
+	measure 'Sp Eng R1' = 0.2005
+		formatString: 0.00
+		displayFolder: _Design\Nativo\Espaçadores
+		lineageTag: 2f021a32-6451-8e6d-0338-ec67a10c9120
+
+	measure 'Sp Eng R2' = 0.2578
+		formatString: 0.00
+		displayFolder: _Design\Nativo\Espaçadores
+		lineageTag: 43cd171b-cda3-52c5-2ef7-e5de7ca5bfca
+
+	measure 'Sp Res L' = 1.0
+		formatString: 0.00
+		displayFolder: _Design\Nativo\Espaçadores
+		lineageTag: ca7599b8-0af8-e5e9-b8f4-bb728a41f740
+
+	measure 'Sp Res R' = 0.38
+		formatString: 0.00
+		displayFolder: _Design\Nativo\Espaçadores
+		lineageTag: 94668e5e-bca2-7ef0-0800-703f7bf4f9ad
+
+	measure 'Txt Veio Curto' = SWITCH ( SELECTEDVALUE ( Fato_Ideias[Veio_De] ), "Proposta de Solução", "Proposta", "Em Implantação", "Em Implant.", "Banco de Ideias", "Banco", SELECTEDVALUE ( Fato_Ideias[Veio_De] ) )
+		displayFolder: _Design\Nativo
+		lineageTag: 4ea6e87a-d0e0-7174-fcd0-253f1b3604f8
+
+	column Chave_Primaria
+		dataType: string
+		lineageTag: fb2270fe-b0ee-4705-86c1-516ab3ecc67a
+		summarizeBy: none
+		sourceColumn: Chave_Primaria
+
+		annotation SummarizationSetBy = Automatic
+
+	column Titulo
+		dataType: string
+		lineageTag: 358e8674-f317-48a2-9a1a-540af02a176e
+		summarizeBy: none
+		sourceColumn: Titulo
+
+		annotation SummarizationSetBy = Automatic
+
+	column ID_Estado
+		dataType: int64
+		formatString: 0
+		lineageTag: 6ed4bca2-d0f9-4d3e-b80a-a013226dd077
+		summarizeBy: none
+		sourceColumn: ID_Estado
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'resultado.ElaboradorId'
+		dataType: string
+		lineageTag: 7833d9f2-1f5e-473e-8037-967412b53706
+		summarizeBy: none
+		sourceColumn: resultado.ElaboradorId
+
+		annotation SummarizationSetBy = Automatic
+
+	column ID_Elaborador_Departamento
+		dataType: int64
+		formatString: 0
+		lineageTag: 7b3bfc47-3c3b-4492-b7bd-c86f5ec64b7a
+		summarizeBy: sum
+		sourceColumn: ID_Elaborador_Departamento
+
+		annotation SummarizationSetBy = Automatic
+
+	column ID_Campanha
+		dataType: int64
+		formatString: 0
+		lineageTag: 88e44707-ffb7-45d2-9fe6-598788008094
+		summarizeBy: none
+		sourceColumn: ID_Campanha
+
+		annotation SummarizationSetBy = Automatic
+
+	column ID_TipoCampanha
+		dataType: int64
+		formatString: 0
+		lineageTag: 1503364b-af06-4308-9516-779be4eb9c9b
+		summarizeBy: sum
+		sourceColumn: ID_TipoCampanha
+
+		annotation SummarizationSetBy = Automatic
+
+	column ID_Departamento
+		dataType: int64
+		formatString: 0
+		lineageTag: b8ea3eed-95f0-4957-8b1d-41c303a88615
+		summarizeBy: sum
+		sourceColumn: ID_Departamento
+
+		annotation SummarizationSetBy = Automatic
+
+	column ID_Tema
+		dataType: int64
+		formatString: 0
+		lineageTag: 133b6a1f-d63b-4ddb-94aa-15a54a6ab915
+		summarizeBy: none
+		sourceColumn: ID_Tema
+
+		annotation SummarizationSetBy = Automatic
+
+	column ID_Tema_Gestor
+		dataType: string
+		lineageTag: 74536a1f-693e-436e-87a7-fbf13c133509
+		summarizeBy: none
+		sourceColumn: ID_Tema_Gestor
+
+		annotation SummarizationSetBy = Automatic
+
+	column Data_Implantadas =
+			
+			MAXX(
+			    FILTER(
+			        ALL(Dim_SLA_Ideias),
+			        Dim_SLA_Ideias[Chave_Primaria] = Fato_Ideias[Chave_Primaria]
+			            && TRIM(Dim_SLA_Ideias[Andamento_Etapa]) = "Implantada"
+			            && (
+			                ISBLANK(Dim_SLA_Ideias[Data_de_Saida])
+			                || Dim_SLA_Ideias[Data_de_Saida] < DATE(1900,1,1)
+			            )
+			    ),
+			    Dim_SLA_Ideias[Data_de_Entrada]
+			)
+		formatString: General Date
+		lineageTag: 65d510ac-c835-42e0-bead-df2060422827
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column AnoMes_Implantacao =
+			
+			IF (
+			    ISBLANK ( Fato_Ideias[Data_Implantadas] ),
+			    BLANK (),
+			    FORMAT ( Fato_Ideias[Data_Implantadas], "yyyy-MM" )
+			)
+		lineageTag: 701b14d0-7c81-4500-a205-21201ea760ba
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'resultado.DataAtualizacao'
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 4f9ad166-6110-47a0-ad1c-72b287dcadc6
+		summarizeBy: none
+		sourceColumn: resultado.DataAtualizacao
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'resultado.CriadoEm'
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 8412ed18-6a23-49a4-a049-da288d52b4e5
+		summarizeBy: none
+		sourceColumn: resultado.CriadoEm
+
+		annotation SummarizationSetBy = Automatic
+
+	column Dias_Etapa_Atual = VAR __k = Fato_Ideias[Chave_Primaria] RETURN MAXX ( FILTER ( ALL ( Dim_SLA_Ideias ), Dim_SLA_Ideias[Chave_Primaria] = __k && Dim_SLA_Ideias[É_Ultimo_Status] = 1 ), Dim_SLA_Ideias[Dias_na_Etapa] )
+		displayFolder: _Design
+		lineageTag: 6d764e45-13bc-4e57-b8f8-8dbe7c240967
+
+	column Veio_De = VAR _v = VAR __k = Fato_Ideias[Chave_Primaria] RETURN MAXX ( FILTER ( ALL ( Dim_SLA_Ideias ), Dim_SLA_Ideias[Chave_Primaria] = __k && Dim_SLA_Ideias[É_Ultimo_Status] = 1 ), Dim_SLA_Ideias[Etapa_Anterior] ) RETURN IF ( ISBLANK ( _v ), "—", _v )
+		displayFolder: _Design
+		lineageTag: e759b8c9-604f-4501-b225-038e3b195477
+
+	column Data_Etapa_Atual = VAR __k = Fato_Ideias[Chave_Primaria] RETURN MAXX ( FILTER ( ALL ( Dim_SLA_Ideias ), Dim_SLA_Ideias[Chave_Primaria] = __k && Dim_SLA_Ideias[É_Ultimo_Status] = 1 ), Dim_SLA_Ideias[Data_de_Entrada] )
+		formatString: dd/mm/yy
+		displayFolder: _Design
+		lineageTag: 8bdb44c2-901c-421f-8735-f581400427bd
+
+	column Lead_Time_Dias = IF ( RELATED ( Dim_Estado[Estados] ) = "Implantada" && NOT ISBLANK ( Fato_Ideias[Data_Implantadas] ), DATEDIFF ( Fato_Ideias[resultado.CriadoEm], Fato_Ideias[Data_Implantadas], DAY ) )
+		displayFolder: _Design
+		lineageTag: 7cc61085-ea87-4d6f-a737-edd4a9388543
+
+	column Etapa_Atual = SWITCH ( RELATED ( Dim_Estado[Estados] ), "ETAPA 1: AVALIAÇÃO", "Avaliação", "ETAPA 2: PROPOSTA DE SOLUÇÃO", "Proposta de Solução", "BANCO DE IDEIAS", "Banco de Ideias", "Validação da Implantação", "Validação", RELATED ( Dim_Estado[Estados] ) )
+		displayFolder: _Design
+		lineageTag: c84166ec-4070-4d66-809c-6ad8807a4f88
+		sortByColumn: Etapa_Atual_Ordem
+
+	column Etapa_Atual_Ordem = SWITCH ( RELATED ( Dim_Estado[Estados] ), "ETAPA 1: AVALIAÇÃO", 1, "ETAPA 2: PROPOSTA DE SOLUÇÃO", 2, "Aprovada", 3, "Em Implantação", 4, "Validação da Implantação", 5, "Implantada", 6, "BANCO DE IDEIAS", 7, "Reprovada", 8, 9 )
+		isHidden
+		displayFolder: _Design
+		lineageTag: 03f144d7-8fc1-4d56-aed6-dd18c878dc85
+
+	column Autor = VAR __k = Fato_Ideias[Chave_Primaria] RETURN MAXX ( FILTER ( ALL ( Dim_Elaborador ), FORMAT ( Dim_Elaborador[Chave_Primaria], "0" ) = __k ), Dim_Elaborador[Nome_elaborador] )
+		displayFolder: _Design
+		lineageTag: 02eb6659-c223-d422-ada8-b36c9ec0a65a
+		summarizeBy: none
+
+	column Empresa_Sigla = RELATED ( Dim_Empresa_Campanha[Abreviação] )
+		displayFolder: _Design
+		lineageTag: e76a6c61-d601-e1b4-8a42-cc131ea90e11
+		summarizeBy: none
+
+	column Tema_Curto = RELATED ( Dim_Tema[Nome_tema] )
+		displayFolder: _Design
+		lineageTag: 5335561a-16a5-793a-423f-06aee9bbbe34
+		summarizeBy: none
+
+	column Previsto_Idea = VAR __k = Fato_Ideias[Chave_Primaria] RETURN SUMX ( FILTER ( ALL ( Dim_Valores ), Dim_Valores[Chave_Primaria] = __k ), Dim_Valores[Qual investimento previsto para implementar?] )
+		dataType: double
+		formatString: #,0
+		displayFolder: _Design
+		lineageTag: 8c858bed-5dae-8e21-e30d-50bb6e0178c4
+		summarizeBy: none
+
+	column Investido_Idea = VAR __k = Fato_Ideias[Chave_Primaria] RETURN SUMX ( FILTER ( ALL ( Dim_Valores ), Dim_Valores[Chave_Primaria] = __k ), Dim_Valores[Valor investido (R$):] ) + 0
+		dataType: double
+		formatString: #,0;-#,0;—
+		displayFolder: _Design
+		lineageTag: 554cc048-62e6-01ed-26cc-3bc38727cd02
+		summarizeBy: none
+
+	column Ganho_Idea = VAR __k = Fato_Ideias[Chave_Primaria] RETURN SUMX ( FILTER ( ALL ( Dim_Valores ), Dim_Valores[Chave_Primaria] = __k ), Dim_Valores[Qual a previsão de ganho (R$) em 12 meses?] )
+		dataType: double
+		formatString: #,0
+		displayFolder: _Design
+		lineageTag: 9fe547e9-a4f7-6b5f-81af-bbba085745ce
+		summarizeBy: none
+
+	column Busca = Fato_Ideias[Titulo] & "  ·  " & Fato_Ideias[Autor] & "  ·  " & Fato_Ideias[Empresa_Sigla] & "  ·  " & Fato_Ideias[Tema_Curto]
+		displayFolder: _Design
+		lineageTag: 55febbad-8278-1bce-1d61-dc2b66bfa04f
+		summarizeBy: none
+
+	column Ideia_Autor = VAR __t = Fato_Ideias[Titulo] RETURN IF ( LEN ( __t ) > 44, LEFT ( __t, 42 ) & "…", __t ) & UNICHAR ( 10 ) & Fato_Ideias[Autor]
+		dataType: string
+		displayFolder: _Design\Nativo
+		lineageTag: 51438a4f-788d-1be0-d5cf-cc7bac4196e4
+		summarizeBy: none
+
+	column Dias_Txt = IF ( ISBLANK ( Fato_Ideias[Dias_Etapa_Atual] ), BLANK (), FORMAT ( Fato_Ideias[Dias_Etapa_Atual], "0" ) & " d" )
+		dataType: string
+		displayFolder: _Design\Nativo
+		lineageTag: 25c2af70-d277-bd41-84e6-49873e7a5736
+		summarizeBy: none
+		sortByColumn: Dias_Etapa_Atual
+
+	column Data_Etapa_Dia = IF ( ISBLANK ( Fato_Ideias[Data_Etapa_Atual] ), BLANK (), DATE ( YEAR ( Fato_Ideias[Data_Etapa_Atual] ), MONTH ( Fato_Ideias[Data_Etapa_Atual] ), DAY ( Fato_Ideias[Data_Etapa_Atual] ) ) )
+		dataType: dateTime
+		formatString: dd/MM/yy
+		displayFolder: _Design\Nativo
+		lineageTag: 465b4da0-40db-60a8-9f4b-8805bfd28a20
+		summarizeBy: none
+
+	column Data_Impl_Dia = IF ( ISBLANK ( Fato_Ideias[Data_Implantadas] ), BLANK (), DATE ( YEAR ( Fato_Ideias[Data_Implantadas] ), MONTH ( Fato_Ideias[Data_Implantadas] ), DAY ( Fato_Ideias[Data_Implantadas] ) ) )
+		dataType: dateTime
+		formatString: dd/MM/yy
+		displayFolder: _Design\Nativo
+		lineageTag: 055efe25-0447-815b-9072-6a8befc98fdd
+		summarizeBy: none
+
+	partition Fato_Ideias = m
+		mode: import
+		source =
+				let
+				    Fonte = Sql.Database("localhost", "IdeiasDemo"),
+				    Dados = Fonte{[Schema="bi", Item="vw_Fato_Ideias"]}[Data]
+				in
+				    Dados
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

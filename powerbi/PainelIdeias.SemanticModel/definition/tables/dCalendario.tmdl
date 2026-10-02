@@ -1,0 +1,97 @@
+table dCalendario
+	lineageTag: 83ea5e4b-33f5-4c77-8164-b1b929179e45
+	dataCategory: Time
+
+	column Date
+		isKey
+		formatString: General Date
+		lineageTag: 7ac9ae47-55b6-45c3-ad84-310685fd417b
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Date]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Ano
+		formatString: 0
+		lineageTag: 0a6b8d66-bdf4-4ac2-8a28-1b1f85d17a2c
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Ano]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Mes
+		formatString: 0
+		lineageTag: c45c69c8-8dce-4c0a-9b5a-de2a80f99332
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Mes]
+
+		annotation SummarizationSetBy = Automatic
+
+	column NomeMes
+		lineageTag: febe74ca-1bad-4e42-8d6f-71e60999d52c
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [NomeMes]
+
+		annotation SummarizationSetBy = Automatic
+
+	column AnoMes
+		lineageTag: 883a0d09-dd35-40ec-bdf6-0964d32bfd9f
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [AnoMes]
+		sortByColumn: AnoMesNum
+
+		annotation SummarizationSetBy = Automatic
+
+	column AnoMesNum
+		formatString: 0
+		lineageTag: f9876c10-ab8d-48c9-b2ff-fb26d5f287a9
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [AnoMesNum]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Mes_Label = UPPER ( LEFT ( FORMAT ( dCalendario[Date], "mmm", "pt-BR" ), 1 ) ) & MID ( FORMAT ( dCalendario[Date], "mmm", "pt-BR" ), 2, 3 ) & REPT ( UNICHAR ( 8203 ), dCalendario[Ano] - 2000 )
+		dataType: string
+		displayFolder: _Design\Nativo
+		lineageTag: 144d2f93-93e1-0868-d294-1b188488de80
+		summarizeBy: none
+		sortByColumn: AnoMesNum
+
+	column Ult12 = VAR __d = DATEDIFF ( EOMONTH ( dCalendario[Date], 0 ), EOMONTH ( MAX ( Referencia[Hoje] ), 0 ), MONTH ) RETURN IF ( __d >= 0 && __d < 12, 1, 0 )
+		dataType: int64
+		formatString: 0
+		displayFolder: _Design\Nativo
+		lineageTag: ad1d1d4e-cfd9-dc39-6291-3995087d04b6
+		summarizeBy: none
+
+	partition dCalendario = calculated
+		mode: import
+		source = ```
+				
+				VAR DataMin = 
+				    DATE ( YEAR ( MIN ( Dim_Data[Data_de_Criacao] ) ), 1, 1 )
+				VAR DataMax = 
+				    DATE ( 
+				        MAX ( YEAR ( MAX ( Dim_Data[Data_de_Criacao] ) ), YEAR ( MAX ( Referencia[Hoje] ) ) ), 
+				        12, 
+				        31 
+				    )
+				RETURN
+				ADDCOLUMNS (
+				    CALENDAR ( DataMin, DataMax ),
+				    "Ano",       YEAR ( [Date] ),
+				    "Mes",       MONTH ( [Date] ),
+				    "NomeMes",   FORMAT ( [Date], "MMM", "pt-BR" ),
+				    "AnoMes",    FORMAT ( [Date], "yyyy-MM" ),
+				    "AnoMesNum", YEAR ( [Date] ) * 100 + MONTH ( [Date] )
+				)
+				```
+
+	annotation PBI_Id = 8ff953d89aca4f87bdc7904261ace898
+

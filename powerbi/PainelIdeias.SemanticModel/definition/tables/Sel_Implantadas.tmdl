@@ -1,0 +1,29 @@
+table Sel_Implantadas
+	lineageTag: aabb6ffa-4d77-74bf-2ae1-012d9d7cf940
+
+	column Opcao
+		dataType: string
+		lineageTag: 913088c3-54a7-858d-9f26-0e2bbcc09c53
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Opcao]
+		sortByColumn: Ordem
+
+		annotation SummarizationSetBy = Automatic
+
+	column Ordem
+		dataType: int64
+		formatString: 0
+		lineageTag: 71ffd018-600d-a5ae-ae7d-df3471970593
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Ordem]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Sel_Implantadas = calculated
+		mode: import
+		source = DATATABLE ( "Opcao", STRING, "Ordem", INTEGER, { { "Por mês", 1 }, { "Acumulado", 2 } } )
+
+	annotation PBI_Id = 6b48730b0447ab464ab1c379d51001ba
+

@@ -1,0 +1,59 @@
+table Dim_Empresa_Campanha
+	lineageTag: 7eee3733-e255-498b-bf8e-d98d7357fdc9
+
+	column Empresa
+		dataType: string
+		lineageTag: 21673815-9cc7-47f0-baeb-18718844b331
+		summarizeBy: none
+		sourceColumn: Empresa
+
+		annotation SummarizationSetBy = Automatic
+
+	column Tipo_Campanha
+		dataType: string
+		lineageTag: f6006901-cfdc-45e8-bd24-8f034a5b41c7
+		summarizeBy: none
+		sourceColumn: Tipo_Campanha
+
+		annotation SummarizationSetBy = Automatic
+
+	column ID_Campanha
+		dataType: int64
+		formatString: 0
+		lineageTag: 79e1d9cb-ecd8-4f4a-a049-a6303d543e1e
+		summarizeBy: none
+		sourceColumn: ID_Campanha
+
+		annotation SummarizationSetBy = Automatic
+
+	column Abreviação
+		dataType: string
+		lineageTag: a2e17639-3607-4d97-9bd3-7c1ea5d6c6e0
+		summarizeBy: none
+		sourceColumn: Abreviação
+
+		annotation SummarizationSetBy = Automatic
+
+	column Empresa_Sigla = Dim_Empresa_Campanha[Abreviação]
+		displayFolder: _Design
+		lineageTag: 3d62c7ff-4f4a-9b01-44ae-8480c7c362d1
+		summarizeBy: none
+
+	column Campanha_Nome = SWITCH ( Dim_Empresa_Campanha[Tipo_Campanha], "EXCELÊNCIA OPERACIONAL", "Excelência Operacional", "INOVAÇÃO", "Inovação", Dim_Empresa_Campanha[Tipo_Campanha] )
+		displayFolder: _Design
+		lineageTag: 15d002e6-5426-4ed8-74fd-86991bb361bf
+		summarizeBy: none
+
+	partition Dim_Empresa_Campanha = m
+		mode: import
+		source =
+				let
+				    Fonte = Sql.Database("localhost", "IdeiasDemo"),
+				    Dados = Fonte{[Schema="bi", Item="vw_Dim_Empresa_Campanha"]}[Data]
+				in
+				    Dados
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+
