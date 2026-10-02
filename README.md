@@ -82,4 +82,12 @@ tests/     testes automatizados
 
 ## Stack
 
-Python · pandas · NumPy · Faker · SQLAlchemy · pyodbc · SQL Server 2022 · Power BI (DAX, TMDL, PBIR) · pytest · ruff
+<p>
+  <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python">
+  <img src="https://img.shields.io/badge/pandas-150458?style=for-the-badge&logo=pandas&logoColor=white" alt="pandas">
+  <img src="https://img.shields.io/badge/NumPy-013243?style=for-the-badge&logo=numpy&logoColor=white" alt="NumPy">
+  <img src="https://img.shields.io/badge/SQL%20Server-CC2927?style=for-the-badge&logo=microsoftsqlserver&logoColor=white" alt="SQL Server">
+  <img src="https://img.shields.io/badge/Power%20BI-F2C811?style=for-the-badge&logo=powerbi&logoColor=black" alt="Power BI">
+  <img src="https://img.shields.io/badge/DAX-1F4E5F?style=for-the-badge" alt="DAX">
+  <img src="https://img.shields.io/badge/Power%20Query-2F7A8C?style=for-the-badge" alt="Power Query">
+</p>
