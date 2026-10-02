@@ -63,7 +63,7 @@ def test_definir_metas():
     s = r.definir_metas(t)
     assert "measure 'Eng Meta' = 0.5" in s
     assert "measure 'SLA Etapa (dias)' = SWITCH ( SELECTEDVALUE ( Sel_Etapa[Etapa] ), \"Avaliação\", 15" in s
-    assert "[Tempo Etapa Sel] > [SLA Etapa (dias)]" in s and "measure 'Meta Conversão' = 0.15" in s
+    assert "[Tempo Etapa Sel] > [SLA Etapa (dias)]" in s and "Meta Conversão" not in s
     assert r.definir_metas(s).count("measure 'SLA Etapa (dias)'") == 1
 
 
@@ -88,6 +88,17 @@ def test_ajustar_financeiro():
 def test_fixar_data_referencia():
     s = r.fixar_data_referencia('x = EOMONTH ( TODAY (), 0 ) & FORMAT ( TODAY(), "mmm" )')
     assert "TODAY" not in s and s.count("MAX ( Referencia[Hoje] )") == 2
+
+
+def test_remover_coluna_devolve_origem():
+    t = ("\tcolumn 'Com Espaço:'\n\t\tdataType: string\n\t\tsourceColumn: Origem X\n\n"
+         "\t\tannotation SummarizationSetBy = Automatic\n\n"
+         "\tcolumn Calc = ```\n\t\t\tSWITCH ( 1, 1, 2 )\n\t\t\t```\n\t\tlineageTag: a\n\n"
+         "\tcolumn Fica\n\t\tsourceColumn: Fica\n")
+    s, fonte = r.remover_coluna(t, "Com Espaço:")
+    assert fonte == "Origem X" and "Com Espaço" not in s
+    s, fonte = r.remover_coluna(s, "Calc")
+    assert fonte is None and s == "\tcolumn Fica\n\t\tsourceColumn: Fica\n"
 
 
 def test_remover_medida_com_e_sem_aspas():

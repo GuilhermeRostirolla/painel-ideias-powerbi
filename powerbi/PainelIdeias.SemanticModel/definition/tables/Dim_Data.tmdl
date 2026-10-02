@@ -18,84 +18,12 @@ table Dim_Data
 
 		annotation SummarizationSetBy = Automatic
 
-	column Data_Ultima_Atualização
-		dataType: dateTime
-		formatString: Short Date
-		lineageTag: 9544ade8-bdde-466b-9f39-5fd6bc93e316
-		summarizeBy: none
-		sourceColumn: Data_Ultima_Atualização
-
-		annotation SummarizationSetBy = Automatic
-
 	column Data_de_Criacao
 		dataType: dateTime
 		formatString: Short Date
 		lineageTag: 1ba8f29a-0f52-4d11-be3f-bd5a98bdd75b
 		summarizeBy: none
 		sourceColumn: Data_de_Criacao
-
-		annotation SummarizationSetBy = Automatic
-
-	column Data_Campanha_Inicio
-		dataType: dateTime
-		formatString: Long Date
-		lineageTag: 42e28fb4-5005-4eb5-9b65-f861e2bbc77a
-		summarizeBy: none
-		sourceColumn: Data_Campanha_Inicio
-
-		annotation SummarizationSetBy = Automatic
-
-	column Data_Inicio_Previsto
-		dataType: dateTime
-		formatString: Long Date
-		lineageTag: 94d4a28d-28b9-4e3a-afb8-752fac79167e
-		summarizeBy: none
-		sourceColumn: Data_Inicio_Previsto
-
-		annotation SummarizationSetBy = Automatic
-
-	column Data_Termino_Previsto
-		dataType: dateTime
-		formatString: Long Date
-		lineageTag: bbd20dd4-d090-4d33-a5cf-c419753f893f
-		summarizeBy: none
-		sourceColumn: Data_Termino_Previsto
-
-		annotation SummarizationSetBy = Automatic
-
-	column Data_Inicio_Real
-		dataType: dateTime
-		formatString: Long Date
-		lineageTag: e3721c45-0286-45df-853e-fe5531b4412a
-		summarizeBy: none
-		sourceColumn: Data_Inicio_Real
-
-		annotation SummarizationSetBy = Automatic
-
-	column Data_Termino_Real
-		dataType: dateTime
-		formatString: Long Date
-		lineageTag: 2d9375b5-0958-45f3-badd-e13d6da5bbb5
-		summarizeBy: none
-		sourceColumn: Data_Termino_Real
-
-		annotation SummarizationSetBy = Automatic
-
-	column AnoMes = FORMAT( Dim_Data[Data_de_Criacao], "YYYY-MM" )
-		lineageTag: e217722f-c480-4df0-9144-1bd77705918c
-		summarizeBy: none
-
-		annotation SummarizationSetBy = Automatic
-
-	column AnoMes_Criacao =
-			
-			IF (
-			    ISBLANK ( Dim_Data[Data_de_Criacao] ),
-			    BLANK (),
-			    FORMAT ( Dim_Data[Data_de_Criacao], "yyyy-MM" )
-			)
-		lineageTag: 0541f62f-36e3-4bb6-97d0-23106ed0f917
-		summarizeBy: none
 
 		annotation SummarizationSetBy = Automatic
 

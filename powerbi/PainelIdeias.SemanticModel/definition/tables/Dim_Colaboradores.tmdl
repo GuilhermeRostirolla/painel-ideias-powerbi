@@ -55,14 +55,6 @@ table Dim_Colaboradores
 
 		annotation SummarizationSetBy = Automatic
 
-	column ID_Colaborador
-		dataType: string
-		lineageTag: 85eaca00-f7cf-4a57-8258-2bc41863e0ab
-		summarizeBy: none
-		sourceColumn: ID_Colaborador
-
-		annotation SummarizationSetBy = Automatic
-
 	column Nome_Colaborador
 		dataType: string
 		lineageTag: 9a8d053b-ffcb-47b2-a9ed-10f415b006f7

@@ -191,11 +191,6 @@ table Fato_Ideias
 		displayFolder: _Design
 		lineageTag: 66ebb81f-d5bd-443a-9668-6a4ebbc9436d
 
-	measure 'Meta Conversão' = 0.15
-		formatString: 0%
-		displayFolder: _Design
-		lineageTag: 2cd593ec-e784-4819-a8b1-6342085562de
-
 	measure 'SLA Referência (dias)' = 60
 		formatString: 0
 		displayFolder: _Design\SLA
@@ -1181,23 +1176,6 @@ table Fato_Ideias
 
 		annotation SummarizationSetBy = Automatic
 
-	column 'resultado.ElaboradorId'
-		dataType: string
-		lineageTag: 7833d9f2-1f5e-473e-8037-967412b53706
-		summarizeBy: none
-		sourceColumn: resultado.ElaboradorId
-
-		annotation SummarizationSetBy = Automatic
-
-	column ID_Elaborador_Departamento
-		dataType: int64
-		formatString: 0
-		lineageTag: 7b3bfc47-3c3b-4492-b7bd-c86f5ec64b7a
-		summarizeBy: sum
-		sourceColumn: ID_Elaborador_Departamento
-
-		annotation SummarizationSetBy = Automatic
-
 	column ID_Campanha
 		dataType: int64
 		formatString: 0
@@ -1207,38 +1185,12 @@ table Fato_Ideias
 
 		annotation SummarizationSetBy = Automatic
 
-	column ID_TipoCampanha
-		dataType: int64
-		formatString: 0
-		lineageTag: 1503364b-af06-4308-9516-779be4eb9c9b
-		summarizeBy: sum
-		sourceColumn: ID_TipoCampanha
-
-		annotation SummarizationSetBy = Automatic
-
-	column ID_Departamento
-		dataType: int64
-		formatString: 0
-		lineageTag: b8ea3eed-95f0-4957-8b1d-41c303a88615
-		summarizeBy: sum
-		sourceColumn: ID_Departamento
-
-		annotation SummarizationSetBy = Automatic
-
 	column ID_Tema
 		dataType: int64
 		formatString: 0
 		lineageTag: 133b6a1f-d63b-4ddb-94aa-15a54a6ab915
 		summarizeBy: none
 		sourceColumn: ID_Tema
-
-		annotation SummarizationSetBy = Automatic
-
-	column ID_Tema_Gestor
-		dataType: string
-		lineageTag: 74536a1f-693e-436e-87a7-fbf13c133509
-		summarizeBy: none
-		sourceColumn: ID_Tema_Gestor
 
 		annotation SummarizationSetBy = Automatic
 
@@ -1259,27 +1211,6 @@ table Fato_Ideias
 		formatString: General Date
 		lineageTag: 65d510ac-c835-42e0-bead-df2060422827
 		summarizeBy: none
-
-		annotation SummarizationSetBy = Automatic
-
-	column AnoMes_Implantacao =
-			
-			IF (
-			    ISBLANK ( Fato_Ideias[Data_Implantadas] ),
-			    BLANK (),
-			    FORMAT ( Fato_Ideias[Data_Implantadas], "yyyy-MM" )
-			)
-		lineageTag: 701b14d0-7c81-4500-a205-21201ea760ba
-		summarizeBy: none
-
-		annotation SummarizationSetBy = Automatic
-
-	column 'resultado.DataAtualizacao'
-		dataType: dateTime
-		formatString: General Date
-		lineageTag: 4f9ad166-6110-47a0-ad1c-72b287dcadc6
-		summarizeBy: none
-		sourceColumn: resultado.DataAtualizacao
 
 		annotation SummarizationSetBy = Automatic
 

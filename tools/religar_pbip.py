@@ -9,7 +9,7 @@ import dependencias_pbip  # noqa: E402
 import metas  # noqa: E402
 
 NOME = "PainelIdeias"
-ANTIGA, NOVA = "Fato_" + "A" + "evo", "Fato_Ideias"
+NOVA = "Fato_Ideias"
 
 VIEWS = {
     NOVA: "vw_Fato_Ideias", "Dim_Estado": "vw_Dim_Estado", "Dim_Tema": "vw_Dim_Tema",
@@ -86,8 +86,6 @@ def definir_metas(tmdl: str) -> str:
         casos = ", ".join(f'"{e}", {d}' for e, d in metas.SLA_ETAPA_DIAS.items())
         novas = (f"\tmeasure 'SLA Etapa (dias)' = SWITCH ( SELECTEDVALUE ( Sel_Etapa[Etapa] ), "
                  f"{casos}, [SLA Referência (dias)] )\n\t\tformatString: 0\n"
-                 f"\t\tdisplayFolder: _Design\n\t\tlineageTag: {uuid.uuid4()}\n\n"
-                 f"\tmeasure 'Meta Conversão' = {metas.META_CONVERSAO}\n\t\tformatString: 0%\n"
                  f"\t\tdisplayFolder: _Design\n\t\tlineageTag: {uuid.uuid4()}\n\n")
         ancora = "\tmeasure 'SLA Referência (dias)'"
         tmdl = tmdl.replace(ancora, novas + ancora, 1)
@@ -253,6 +251,57 @@ def remover_sem_uso(raiz: Path) -> tuple[set[str], set[tuple[str, str]]]:
     return tabelas, medidas
 
 
+def _colunas_estruturais(sm: Path, tabelas: dict[str, Path]) -> set[tuple[str, str]]:
+    rel = (sm / "relationships.tmdl").read_text(encoding="utf-8-sig")
+    fixas = {(t.strip("'"), c.strip("'"))
+             for t, c in re.findall(r"Column: ('[^']+'|[^.\s]+)\.('[^']+'|\S+)", rel)}
+    for t, arq in tabelas.items():
+        s = arq.read_text(encoding="utf-8-sig")
+        for c in re.findall(r"^\t\t(?:sortByColumn|\tcolumn): ('[^']+'|\S+)", s, flags=re.M):
+            fixas.add((t, c.strip("'")))
+    return fixas
+
+
+def colunas_sem_uso(sm_tabelas: Path, rep_dir: Path) -> dict[str, set[str]]:
+    objs, calc, tabelas = dependencias_pbip.carregar(sm_tabelas)
+    vistos = dependencias_pbip.usados(objs, calc, rep_dir)
+    fixas = _colunas_estruturais(sm_tabelas.parent, tabelas)
+    sem_uso = {}
+    for t, arq in tabelas.items():
+        s = arq.read_text(encoding="utf-8-sig")
+        if re.search(r"^\tpartition [^\n]*= calculated", s, flags=re.M):
+            continue
+        nomes = {c.strip("'") for c in re.findall(r"^\tcolumn ('[^']+'|[^\s=]+)", s, flags=re.M)}
+        sobra = {c for c in nomes if (t, c) not in vistos and (t, c) not in fixas}
+        if sobra:
+            sem_uso[t] = sobra
+    return sem_uso
+
+
+def remover_coluna(tmdl: str, nome: str) -> tuple[str, str | None]:
+    nome_re = re.escape(nome)
+    padrao = re.compile(rf"^\tcolumn (?:'{nome_re}'|{nome_re})(?=[ \t]*(?:=|\n))[^\n]*\n{_CORPO}", re.M)
+    m = padrao.search(tmdl)
+    if not m:
+        raise ValueError(f"coluna {nome} não encontrada para remoção")
+    fonte = re.search(r"^\t\tsourceColumn: ([^\n]+)", m.group(0), flags=re.M)
+    return tmdl[:m.start()] + tmdl[m.end():], fonte.group(1).strip() if fonte else None
+
+
+def remover_colunas_sem_uso(raiz: Path) -> dict[str, dict[str, str | None]]:
+    tabelas_dir = raiz / f"{NOME}.SemanticModel" / "definition" / "tables"
+    removidas = {}
+    for t, nomes in colunas_sem_uso(tabelas_dir, raiz / f"{NOME}.Report" / "definition").items():
+        arq = tabelas_dir / f"{t}.tmdl"
+        s = arq.read_text(encoding="utf-8-sig")
+        removidas[t] = {}
+        for nome in sorted(nomes):
+            s, fonte = remover_coluna(s, nome)
+            removidas[t][nome] = fonte
+        arq.write_text(s, encoding="utf-8")
+    return removidas
+
+
 def limpar_model(model: str) -> str:
     return "".join(linha for linha in model.splitlines(keepends=True)
                    if not linha.startswith(("ref role ", "ref culture ")))
@@ -280,12 +329,13 @@ def religar(raiz: Path) -> list[str]:
     sm = raiz / f"{NOME}.SemanticModel" / "definition"
     tabelas = sm / "tables"
 
-    for p in _textos(raiz):
-        s = p.read_text(encoding="utf-8-sig")
-        if ANTIGA in s:
-            p.write_text(s.replace(ANTIGA, NOVA), encoding="utf-8")
-    antiga_arq = tabelas / f"{ANTIGA}.tmdl"
-    if antiga_arq.exists():
+    antiga_arq = next((p for p in tabelas.glob("Fato_*.tmdl") if p.stem != NOVA), None)
+    if antiga_arq:
+        antiga = antiga_arq.stem
+        for p in _textos(raiz):
+            s = p.read_text(encoding="utf-8-sig")
+            if antiga in s:
+                p.write_text(s.replace(antiga, NOVA), encoding="utf-8")
         antiga_arq.rename(tabelas / f"{NOVA}.tmdl")
 
     tabelas_removidas, medidas_removidas = remover_sem_uso(raiz)
@@ -317,6 +367,8 @@ def religar(raiz: Path) -> list[str]:
     if "ref table Referencia" not in s:
         s = s.replace(f"ref table {NOVA}\n", f"ref table {NOVA}\nref table Referencia\n", 1)
     model.write_text(s, encoding="utf-8")
+    colunas = remover_colunas_sem_uso(raiz)
+    print(f"removidas: {sum(map(len, colunas.values()))} colunas sem uso")
 
     residuos = []
     padrao = re.compile(r"https?://|token=|\.xlsx|Share" r"Point|Web\.Contents", re.I)
