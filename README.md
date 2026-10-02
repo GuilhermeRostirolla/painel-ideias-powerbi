@@ -1,6 +1,10 @@
 # Painel de Ideias · Python + SQL Server + Power BI
 
+[English version](README.en.md)
+
 > **Toda empresa tem pessoas com boas ideias. Poucas sabem o que acontece com elas depois que são enviadas.**
+
+![Tour pelo painel](docs/img/painel.gif)
 
 Este dashboard mostra o desempenho de um **programa de ideias** dentro de uma empresa, um programa que busca não só a **melhoria contínua** do dia a dia, mas também a **inovação**. Funciona assim: qualquer colaborador, do chão de fábrica ao escritório, envia sua ideia por um formulário em uma plataforma de gestão de ideias. Pode ser reduzir um desperdício, ganhar tempo num processo, deixar uma tarefa mais segura ou melhorar a experiência do cliente.
 
@@ -29,11 +33,9 @@ No caminho, algumas são reprovadas, outras canceladas e outras voltam para o ba
 
 ### Por que os dados são fictícios
 
-Ideias de colaboradores, nomes, valores de investimento e ganhos são **informações sensíveis** de uma empresa. Para poder mostrar o projeto sem expor nada disso, recriei toda a base com um **simulador em Python**: pessoas, empresas, títulos, datas e valores são gerados do zero e gravados num SQL Server.
+Este painel é inspirado em um projeto real de programa de ideias. Ideias de colaboradores, nomes, valores de investimento e ganhos são **informações sensíveis**, então recriei tudo do zero com um **simulador em Python**: pessoas, empresas, títulos, datas e valores são gerados pelo simulador e gravados num SQL Server.
 
 O simulador não sorteia números soltos. Ele reproduz o comportamento de um programa real: cada ideia percorre as etapas como uma máquina de estados, com tempo variável em cada uma, retrabalho, reprovações e cancelamentos. Cada empresa tem seu próprio perfil de retorno financeiro. O resultado é um painel com cara de dado real e **nenhum dado real** dentro dele.
-
-![Visão Geral](docs/img/visao_geral.png)
 
 ## Arquitetura
 
@@ -48,6 +50,8 @@ Python (simulador)  ──▶  SQL Server · schema dw (star schema)  ──▶ 
 | **Power BI** (`powerbi/`) | Projeto PBIP (TMDL + PBIR) com 6 páginas: Visão Geral, SLA & Fluxo, Implantadas, Financeiro, Colaboradores e Detalhe das Ideias. |
 
 ## Páginas
+
+![Visão Geral](docs/img/visao_geral.png)
 
 | SLA & Fluxo | Financeiro |
 |---|---|
@@ -73,7 +77,29 @@ Python (simulador)  ──▶  SQL Server · schema dw (star schema)  ──▶ 
 - **Reprodutível:** a mesma `--semente` gera exatamente o mesmo banco; a data de referência fica gravada em `dw.meta_carga`, então o painel não depende de `TODAY()`.
 - **Qualidade de dados:** validações em Python bloqueiam a carga se algo estiver incoerente, e `sql/04_checks.sql` confere o resultado no banco.
 - **Metas definidas:** SLA geral de 60 dias, SLA por etapa, meta de engajamento de 50% e de conversão de 15%.
-- **Testes:** 56 testes com `pytest` e lint com `ruff`.
+- **Testes:** 57 testes com `pytest` e lint com `ruff`.
+
+## Decisões que tomei
+
+| Decisão | Por quê |
+|---|---|
+| **Star schema no schema `dw` e views no schema `bi`** | Separa onde o dado é guardado de como ele é consumido. O banco segue padrão de nomes e integridade (PK, FK, CHECK); as views entregam ao Power BI exatamente as colunas que ele usa. Dá para mudar o banco sem quebrar o relatório. |
+| **Simulador como máquina de estados, não linhas aleatórias** | Indicadores de SLA, envelhecimento e funil só fazem sentido se as datas e as etapas forem coerentes entre si. Cada ideia "vive" a jornada, com tempos lognormais, retrabalho e reprovações. |
+| **Data de referência gravada no banco em vez de `TODAY()`** | Os números não mudam sozinhos com o calendário e não quebram na virada do mês. Junto com a `--semente`, qualquer pessoa reproduz exatamente o mesmo painel. |
+| **Validar antes de carregar e checar depois** | Se algo estiver incoerente (data futura, etapa quebrada, nome duplicado), a carga para. Melhor falhar cedo do que mostrar número errado para a liderança. |
+| **Metas e SLA explícitos** | Sem meta, o painel só descreve. Com SLA por etapa e metas de engajamento e conversão, ele aponta onde agir. |
+| **Projeto em PBIP (TMDL + PBIR) em vez de `.pbix`** | O modelo e o relatório viram texto: versionados no Git, revisáveis linha a linha e automatizáveis por script. |
+| **Modelo enxuto** | Tabelas, colunas e medidas sem uso foram removidas. O modelo tem 240 medidas, todas validadas contra o banco. |
+
+### Próximos passos
+
+- Segurança por linha (RLS) para cada empresa ver só os próprios dados.
+- Atualização incremental e publicação no Power BI Service com atualização agendada.
+- Alertas automáticos quando uma ideia passa do SLA da etapa.
+
+## Como foi construído
+
+Projeto desenvolvido por mim com apoio de IA (Claude) como assistente de programação. A ideia, o desenho do processo, as regras de negócio, as metas, o layout do painel e a revisão de cada entrega são meus; a IA acelerou a escrita de código, os testes e as verificações.
 
 ## Como rodar
 
