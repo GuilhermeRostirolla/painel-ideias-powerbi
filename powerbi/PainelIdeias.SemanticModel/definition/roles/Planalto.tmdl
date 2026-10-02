@@ -1,0 +1,11 @@
+role Planalto
+	modelPermission: read
+
+	tablePermission Dim_Empresa_Campanha = [Abreviação] = "Planalto"
+
+	tablePermission Planilha = [Unidade de Prestação Serviço] = "Planalto Têxtil"
+
+	tablePermission TabelaFuncionarios = [Empresa] = "Planalto"
+
+	annotation PBI_Id = c941b50dfb8f497396243ac421b96daa
+

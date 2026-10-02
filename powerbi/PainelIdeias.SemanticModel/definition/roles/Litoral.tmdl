@@ -1,0 +1,11 @@
+role Litoral
+	modelPermission: read
+
+	tablePermission Dim_Empresa_Campanha = [Abreviação] = "Litoral"
+
+	tablePermission Planilha = [Unidade de Prestação Serviço] = "Litoral Serviços"
+
+	tablePermission TabelaFuncionarios = [Empresa] = "Litoral"
+
+	annotation PBI_Id = 08dfa71f3e614cb1b61623e0a69428d6
+

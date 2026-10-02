@@ -63,6 +63,10 @@ Python (simulador)  ──▶  SQL Server · schema dw (star schema)  ──▶ 
 
 ![Detalhe das Ideias](docs/img/detalhe.png)
 
+**Segurança por empresa (RLS): painel visto como a empresa Litoral**
+
+![RLS por empresa](docs/img/rls_litoral.png)
+
 ## Modelo e código
 
 ![Modelo no Power BI](docs/img/modelo_powerbi.png)
@@ -77,7 +81,7 @@ Python (simulador)  ──▶  SQL Server · schema dw (star schema)  ──▶ 
 - **Reprodutível:** a mesma `--semente` gera exatamente o mesmo banco; a data de referência fica gravada em `dw.meta_carga`, então o painel não depende de `TODAY()`.
 - **Qualidade de dados:** validações em Python bloqueiam a carga se algo estiver incoerente, e `sql/04_checks.sql` confere o resultado no banco.
 - **Metas definidas:** SLA geral de 60 dias, SLA por etapa, meta de engajamento de 50% e de conversão de 15%.
-- **Testes:** 57 testes com `pytest` e lint com `ruff`.
+- **Testes:** 58 testes com `pytest` e lint com `ruff`.
 
 ## Decisões que tomei
 
@@ -89,11 +93,11 @@ Python (simulador)  ──▶  SQL Server · schema dw (star schema)  ──▶ 
 | **Validar antes de carregar e checar depois** | Se algo estiver incoerente (data futura, etapa quebrada, nome duplicado), a carga para. Melhor falhar cedo do que mostrar número errado para a liderança. |
 | **Metas e SLA explícitos** | Sem meta, o painel só descreve. Com SLA por etapa e metas de engajamento e conversão, ele aponta onde agir. |
 | **Projeto em PBIP (TMDL + PBIR) em vez de `.pbix`** | O modelo e o relatório viram texto: versionados no Git, revisáveis linha a linha e automatizáveis por script. |
+| **Segurança por linha (RLS) por empresa** | Cada empresa tem seu próprio papel de segurança, que filtra as ideias, os colaboradores e o quadro de funcionários daquela empresa. No Power BI Service, basta atribuir as pessoas ao papel da empresa delas. Testado com "Exibir como". |
 | **Modelo enxuto** | Tabelas, colunas e medidas sem uso foram removidas. O modelo tem 240 medidas, todas validadas contra o banco. |
 
 ### Próximos passos
 
-- Segurança por linha (RLS) para cada empresa ver só os próprios dados.
 - Atualização incremental e publicação no Power BI Service com atualização agendada.
 - Alertas automáticos quando uma ideia passa do SLA da etapa.
 
@@ -112,7 +116,7 @@ pip install -r requirements.txt -r requirements-dev.txt
 python -m gerador.main --sem-blocklist --semente 501844422 --data-referencia 2026-09-30
 ```
 
-O comando cria o banco `IdeiasDemo`, roda `sql/01_schema.sql`, grava os dados, cria as views de `sql/03_views_compat.sql` e executa as checagens. Depois abra `powerbi/PainelIdeias.pbip` no Power BI Desktop e clique em **Atualizar**.
+O comando cria o banco `IdeiasDemo`, roda `sql/01_schema.sql`, grava os dados, cria as views de `sql/03_views_compat.sql` e executa as checagens. Depois rode `python tools/religar_pbip.py --rls` para criar um papel de segurança por empresa, abra `powerbi/PainelIdeias.pbip` no Power BI Desktop e clique em **Atualizar**.
 
 Opções: `--servidor` (padrão `localhost`), `--banco` (padrão `IdeiasDemo`), `--semente` e `--data-referencia` (padrão: aleatória e hoje).
 

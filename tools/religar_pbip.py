@@ -187,6 +187,48 @@ def _tabela_referencia() -> str:
             + "\tannotation PBI_ResultType = Table\n")
 
 
+def papeis_por_empresa(empresas: list[tuple[str, str]]) -> dict[str, dict[str, str]]:
+    return {sigla: {"Dim_Empresa_Campanha": f'[Abreviação] = "{sigla}"',
+                    "Planilha": f'[Unidade de Prestação Serviço] = "{nome}"',
+                    "TabelaFuncionarios": f'[Empresa] = "{sigla}"'}
+            for nome, sigla in empresas}
+
+
+def _ref_papel(nome: str) -> str:
+    return f"'{nome}'" if re.search(r"\W", nome) else nome
+
+
+def _papel(nome: str, filtros: dict[str, str]) -> str:
+    corpo = "".join(f"\n\ttablePermission {t} = {expr}\n" for t, expr in filtros.items())
+    return f"role {_ref_papel(nome)}\n\tmodelPermission: read\n" + corpo
+
+
+def adicionar_rls(raiz: Path, empresas: list[tuple[str, str]]) -> None:
+    sm = raiz / f"{NOME}.SemanticModel" / "definition"
+    pasta = sm / "roles"
+    pasta.mkdir(exist_ok=True)
+    for antigo in pasta.glob("*.tmdl"):
+        antigo.unlink()
+    papeis = papeis_por_empresa(empresas)
+    for nome, filtros in papeis.items():
+        (pasta / f"{nome}.tmdl").write_text(_papel(nome, filtros), encoding="utf-8")
+    model = sm / "model.tmdl"
+    linhas = [x for x in model.read_text(encoding="utf-8-sig").splitlines(keepends=True)
+              if not x.startswith("ref role ")]
+    refs = "".join(f"ref role {_ref_papel(n)}\n" for n in papeis)
+    s = "".join(linhas).replace("ref cultureInfo", refs + "\nref cultureInfo", 1)
+    model.write_text(re.sub(r"\n{3,}", "\n\n", s), encoding="utf-8")
+
+
+def empresas_do_banco(servidor: str = "localhost", banco: str = "IdeiasDemo") -> list[tuple[str, str]]:
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+    from sqlalchemy import text
+
+    from gerador.banco import criar_engine
+    with criar_engine(servidor, banco).connect() as c:
+        return [(n, s) for n, s in c.execute(text("SELECT nome, sigla FROM dw.dim_unidade ORDER BY sigla"))]
+
+
 def _sem_uso(sm_tabelas: Path, rep_dir: Path) -> tuple[set[str], set[tuple[str, str]]]:
     objs, calc, tabelas = dependencias_pbip.carregar(sm_tabelas)
     vistos = dependencias_pbip.usados(objs, calc, rep_dir)
@@ -259,6 +301,12 @@ def _colunas_estruturais(sm: Path, tabelas: dict[str, Path]) -> set[tuple[str, s
         s = arq.read_text(encoding="utf-8-sig")
         for c in re.findall(r"^\t\t(?:sortByColumn|\tcolumn): ('[^']+'|\S+)", s, flags=re.M):
             fixas.add((t, c.strip("'")))
+    for papel in (sm / "roles").glob("*.tmdl") if (sm / "roles").exists() else []:
+        for t, expr in re.findall(r"^\ttablePermission ('[^']+'|\S+) = ([^\n]+)",
+                                  papel.read_text(encoding="utf-8-sig"), flags=re.M):
+            t = t.strip("'")
+            fixas |= {(t, c) for c in re.findall(r"(?<![\w'\]])\[([^\]]+)\]", expr)}
+            fixas |= {(o.strip("'"), c) for o, c in re.findall(r"('[^']+'|\w+)\[([^\]]+)\]", expr)}
     return fixas
 
 
@@ -381,6 +429,11 @@ def religar(raiz: Path) -> list[str]:
 
 if __name__ == "__main__":
     raiz = Path(__file__).resolve().parents[1] / "powerbi"
+    if "--rls" in sys.argv:
+        empresas = empresas_do_banco()
+        adicionar_rls(raiz, empresas)
+        print("RLS: 1 papel por empresa ->", ", ".join(s for _, s in empresas))
+        sys.exit(0)
     r = religar(raiz)
     if r:
         print("RESÍDUOS:\n  " + "\n  ".join(r))

@@ -65,6 +65,10 @@ Python (simulator)  ──▶  SQL Server · dw schema (star schema)  ──▶ 
 
 ![Idea Detail](docs/img/detalhe.png)
 
+**Row-level security per company: dashboard viewed as the Litoral company**
+
+![RLS per company](docs/img/rls_litoral.png)
+
 ## Model and code
 
 ![Power BI model](docs/img/modelo_powerbi.png)
@@ -83,11 +87,11 @@ Python (simulator)  ──▶  SQL Server · dw schema (star schema)  ──▶ 
 | **Validate before loading, check after** | If anything is inconsistent (future date, broken stage chain, duplicate name), the load stops. Better to fail early than to show leadership a wrong number. |
 | **Explicit targets and SLAs** | Without targets a dashboard only describes. With per-stage SLAs and engagement and conversion targets, it shows where to act. |
 | **PBIP (TMDL + PBIR) instead of `.pbix`** | The model and report become text: versioned in Git, reviewable line by line and scriptable. |
+| **Row-level security (RLS) per company** | Each company has its own security role, filtering that company's ideas, people and headcount. In the Power BI Service, you just assign people to their company's role. Tested with "View as". |
 | **Lean model** | Unused tables, columns and measures were removed. The model has 240 measures, all validated against the database. |
 
 ### Next steps
 
-- Row-level security (RLS) so each company sees only its own data.
 - Incremental refresh and publishing to the Power BI Service with scheduled refresh.
 - Automatic alerts when an idea exceeds its stage SLA.
 
@@ -106,7 +110,7 @@ pip install -r requirements.txt -r requirements-dev.txt
 python -m gerador.main --sem-blocklist --semente 501844422 --data-referencia 2026-09-30
 ```
 
-This creates the `IdeiasDemo` database, runs `sql/01_schema.sql`, loads the data, creates the views in `sql/03_views_compat.sql` and runs the checks. Then open `powerbi/PainelIdeias.pbip` in Power BI Desktop and click **Refresh**.
+This creates the `IdeiasDemo` database, runs `sql/01_schema.sql`, loads the data, creates the views in `sql/03_views_compat.sql` and runs the checks. Then run `python tools/religar_pbip.py --rls` to create one security role per company, open `powerbi/PainelIdeias.pbip` in Power BI Desktop and click **Refresh**.
 
 Tests: `pytest` and `ruff check .` (tests marked `sql` need the local SQL Server).
 

@@ -1,0 +1,11 @@
+role Pioneira
+	modelPermission: read
+
+	tablePermission Dim_Empresa_Campanha = [Abreviação] = "Pioneira"
+
+	tablePermission Planilha = [Unidade de Prestação Serviço] = "Pioneira Metalúrgica"
+
+	tablePermission TabelaFuncionarios = [Empresa] = "Pioneira"
+
+	annotation PBI_Id = 4336fc67fe154efa8f5be054bdec1a67
+
