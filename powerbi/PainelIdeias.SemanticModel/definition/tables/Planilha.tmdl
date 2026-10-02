@@ -17,14 +17,6 @@ table Planilha
 
 		annotation SummarizationSetBy = Automatic
 
-	column 'Nome do Gestor'
-		dataType: string
-		lineageTag: 6fe2fc68-538e-4662-8c83-aa3c26c5605e
-		summarizeBy: none
-		sourceColumn: Nome do Gestor
-
-		annotation SummarizationSetBy = Automatic
-
 	partition Planilha = m
 		mode: import
 		source =

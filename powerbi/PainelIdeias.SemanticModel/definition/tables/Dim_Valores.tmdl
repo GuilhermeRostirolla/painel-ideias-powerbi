@@ -19,16 +19,6 @@ table Dim_Valores
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
-	column 'Ganho Direto (RS) - Estimado em 12 Meses:'
-		dataType: double
-		lineageTag: 61b2e2ab-1a8e-4677-8dd6-efe8f66e9040
-		summarizeBy: sum
-		sourceColumn: Ganho Direto (RS) - Estimado em 12 Meses:
-
-		annotation SummarizationSetBy = Automatic
-
-		annotation PBI_FormatHint = {"isGeneralNumber":true}
-
 	column 'Qual investimento previsto para implementar?'
 		dataType: double
 		lineageTag: 259ad2b0-c393-4431-ac56-e226d86f66f7
