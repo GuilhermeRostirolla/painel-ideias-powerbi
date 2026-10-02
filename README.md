@@ -1,6 +1,16 @@
 # Painel de Ideias · Python + SQL Server + Power BI
 
-Dashboard de gestão de um **programa de ideias e melhoria contínua**, o tipo de programa em que os colaboradores sugerem melhorias para o próprio trabalho. O painel acompanha cada ideia do cadastro até a implantação, passando por **Avaliação → Proposta de Solução → Aprovada → Em Implantação → Validação → Implantada**, e também as reprovadas, as canceladas e as que voltam para o banco de ideias.
+> **Toda empresa tem pessoas com boas ideias. Poucas sabem o que acontece com elas depois que são enviadas.**
+
+Este dashboard mostra o desempenho de um **programa de ideias** dentro de uma empresa, um programa que busca não só a **melhoria contínua** do dia a dia, mas também a **inovação**. Funciona assim: qualquer colaborador, do chão de fábrica ao escritório, envia sua ideia por um formulário em uma plataforma de gestão de ideias. Pode ser reduzir um desperdício, ganhar tempo num processo, deixar uma tarefa mais segura ou melhorar a experiência do cliente.
+
+A partir daí, cada ideia percorre uma jornada:
+
+**Avaliação → Proposta de Solução → Aprovada → Em Implantação → Validação → Implantada**
+
+No caminho, algumas são reprovadas, outras canceladas e outras voltam para o banco de ideias para amadurecer. O problema é que essa jornada costuma ficar invisível: ninguém sabe ao certo quantas ideias estão paradas, onde elas travam, quanto dinheiro estão gerando ou quem está de fato participando.
+
+**O painel torna essa jornada visível.** Em poucos cliques, a liderança enxerga o funil inteiro, os gargalos de prazo, o retorno financeiro e o engajamento das pessoas. Assim, o programa deixa de ser uma caixa de sugestões e passa a ser gerido com indicadores, metas e SLA.
 
 ### Perguntas que o painel responde
 
@@ -17,7 +27,11 @@ Dashboard de gestão de um **programa de ideias e melhoria contínua**, o tipo d
 - Metas definidas: **SLA geral de 60 dias**, SLA por etapa (Avaliação 15 d, Proposta 45 d, Aprovada 30 d, Em Implantação 90 d, Validação 20 d), **50% de engajamento** e **15% de conversão** em implantação.
 - Filtros por período, empresa e campanha em todas as páginas.
 
-**Todos os dados são 100% fictícios.** Pessoas, empresas, títulos, datas e valores são gerados por um simulador em Python, que reproduz o comportamento de um programa real: durações variáveis por etapa, retrabalho, reprovações, cancelamentos e perfil financeiro próprio de cada empresa. Nenhum dado real é usado.
+### Por que os dados são fictícios
+
+Ideias de colaboradores, nomes, valores de investimento e ganhos são **informações sensíveis** de uma empresa. Para poder mostrar o projeto sem expor nada disso, recriei toda a base com um **simulador em Python**: pessoas, empresas, títulos, datas e valores são gerados do zero e gravados num SQL Server.
+
+O simulador não sorteia números soltos. Ele reproduz o comportamento de um programa real: cada ideia percorre as etapas como uma máquina de estados, com tempo variável em cada uma, retrabalho, reprovações e cancelamentos. Cada empresa tem seu próprio perfil de retorno financeiro. O resultado é um painel com cara de dado real e **nenhum dado real** dentro dele.
 
 ![Visão Geral](docs/img/visao_geral.png)
 
