@@ -1,0 +1,23 @@
+table Referencia
+	isHidden
+	lineageTag: 63c11c3f-c999-4f5b-8c22-afe77355a24f
+
+	column Hoje
+		dataType: dateTime
+		isHidden
+		formatString: Short Date
+		lineageTag: 893dafd4-9d2a-4df5-b4e9-7c8ffd5e747e
+		summarizeBy: none
+		sourceColumn: Hoje
+
+	partition Referencia = m
+		mode: import
+		source =
+				let
+				    Fonte = Sql.Database("localhost", "IdeiasDemo"),
+				    Dados = Fonte{[Schema="bi", Item="vw_Referencia"]}[Data]
+				in
+				    Dados
+
+	annotation PBI_ResultType = Table
+

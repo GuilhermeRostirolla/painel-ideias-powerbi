@@ -1,0 +1,7 @@
+numpy>=2.1
+pandas>=2.2
+Faker>=30
+SQLAlchemy>=2.0
+pyodbc>=5.2
+Pillow>=11
+pytest>=8

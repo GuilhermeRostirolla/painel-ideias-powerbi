@@ -1,0 +1,377 @@
+cultureInfo pt-BR
+
+	linguisticMetadata =
+			{
+			  "Version": "2.0.0",
+			  "Language": "en-US",
+			  "Entities": {
+			    "fato_ideias.ideia_autor": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Fato_Ideias",
+			          "ConceptualProperty": "Ideia_Autor"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Ideia · autor": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "fato_ideias.empresa_sigla": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Fato_Ideias",
+			          "ConceptualProperty": "Empresa_Sigla"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Empresa": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "fato_ideias.tema_curto": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Fato_Ideias",
+			          "ConceptualProperty": "Tema_Curto"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Tema": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "fato_ideias.veio_de": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Fato_Ideias",
+			          "ConceptualProperty": "Veio_De"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Veio de": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "fato_ideias.dias_txt": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Fato_Ideias",
+			          "ConceptualProperty": "Dias_Txt"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Na etapa": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        },
+			        {
+			          "Dias na etapa": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "fato_ideias.evo_criadas": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Fato_Ideias",
+			          "ConceptualProperty": "Evo Criadas"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Criadas": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "fato_ideias.evo_implantadas": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Fato_Ideias",
+			          "ConceptualProperty": "Evo Implantadas"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Implantadas": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "fato_ideias.titulo": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Fato_Ideias",
+			          "ConceptualProperty": "Titulo"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Ideia": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "fato_ideias.autor": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Fato_Ideias",
+			          "ConceptualProperty": "Autor"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Autor": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "fato_ideias.data_impl_dia": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Fato_Ideias",
+			          "ConceptualProperty": "Data_Impl_Dia"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Implantada": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "fato_ideias.etapa_atual": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Fato_Ideias",
+			          "ConceptualProperty": "Etapa_Atual"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Status": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        },
+			        {
+			          "Status atual": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "fato_ideias.previsto_idea": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Fato_Ideias",
+			          "ConceptualProperty": "Previsto_Idea"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Previsto": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "fato_ideias.investido_idea": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Fato_Ideias",
+			          "ConceptualProperty": "Investido_Idea"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Investido": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "fato_ideias.ganho_idea": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Fato_Ideias",
+			          "ConceptualProperty": "Ganho_Idea"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Ganho 12m": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "fato_ideias.data_etapa_dia": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Fato_Ideias",
+			          "ConceptualProperty": "Data_Etapa_Dia"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Desde": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        },
+			        {
+			          "Entrou em": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "dim_sla_ideias.data_entrada_dia": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Dim_SLA_Ideias",
+			          "ConceptualProperty": "Data_Entrada_Dia"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Data": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    }
+			  }
+			}
+		contentType: json
+

@@ -1,0 +1,27 @@
+table TabelaFuncionarios
+	lineageTag: d186eaac-eeaf-498b-9269-eb315f32c16b
+
+	column Empresa
+		dataType: string
+		lineageTag: 8a9b468b-d5eb-4fd2-b026-e2b06eb8c789
+		summarizeBy: none
+		sourceColumn: Empresa
+
+	column Funcionarios
+		dataType: int64
+		formatString: 0
+		lineageTag: dd3b6578-e474-4388-a4c3-53583f50b75f
+		summarizeBy: sum
+		sourceColumn: Funcionarios
+
+	partition TabelaFuncionarios = m
+		mode: import
+		source =
+				let
+				    Fonte = Sql.Database("localhost", "IdeiasDemo"),
+				    Dados = Fonte{[Schema="bi", Item="vw_TabelaFuncionarios"]}[Data]
+				in
+				    Dados
+
+	annotation PBI_ResultType = Table
+

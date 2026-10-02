@@ -1,0 +1,49 @@
+table Sel_Etapa
+	lineageTag: c3df82ac-b4b6-8cae-acfd-7783813260f7
+
+	column Etapa
+		dataType: string
+		lineageTag: b43ceecc-77f3-30f4-b073-0f8a8388ec6a
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Etapa]
+		sortByColumn: Ordem
+
+		annotation SummarizationSetBy = Automatic
+
+	column Ordem
+		dataType: int64
+		formatString: 0
+		lineageTag: 94b00f99-96e9-1dcc-15cf-64ce6d9288bc
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Ordem]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Abrev
+		dataType: string
+		lineageTag: b9d1e32d-4ec5-c325-799d-b9c82b68062f
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Abrev]
+		sortByColumn: Ordem
+
+		annotation SummarizationSetBy = Automatic
+
+	column Chave
+		dataType: string
+		lineageTag: 8b2f8190-1a63-54c9-fba6-86817ee96f41
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Chave]
+		sortByColumn: Ordem
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Sel_Etapa = calculated
+		mode: import
+		source = DATATABLE ( "Etapa", STRING, "Ordem", INTEGER, "Abrev", STRING, "Chave", STRING, { { "Avaliação", 1, "Avaliação", "​" }, { "Proposta de Solução", 2, "Proposta", "​​" }, { "Aprovada", 3, "Aprovada", "​​​" }, { "Em Implantação", 4, "Em Implant.", "​​​​" }, { "Validação", 5, "Validação", "​​​​​" }, { "Implantada", 6, "Implantada", "​​​​​​" }, { "Banco de Ideias", 7, "Banco de Ideias", "​​​​​​​" }, { "Reprovada", 8, "Reprovada", "​​​​​​​​" }, { "Cancelada", 9, "Cancelada", "​​​​​​​​​" } } )
+
+	annotation PBI_Id = 9eb4fa76bff0bc2d1d4617dcbcde659d
+

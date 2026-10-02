@@ -1,0 +1,72 @@
+table Dim_Valores
+	lineageTag: f3b838fe-a0f9-4ea2-a6ca-551d8aee93c3
+
+	column Chave_Primaria
+		dataType: string
+		lineageTag: 0ee53501-4bf9-4134-a787-82fb8336ed95
+		summarizeBy: none
+		sourceColumn: Chave_Primaria
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Valor investido (R$):'
+		dataType: double
+		lineageTag: c61ef201-2259-4bf7-84ba-bfab52e2d4a6
+		summarizeBy: sum
+		sourceColumn: Valor investido (R$):
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Ganho Direto (RS) - Estimado em 12 Meses:'
+		dataType: double
+		lineageTag: 61b2e2ab-1a8e-4677-8dd6-efe8f66e9040
+		summarizeBy: sum
+		sourceColumn: Ganho Direto (RS) - Estimado em 12 Meses:
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Qual investimento previsto para implementar?'
+		dataType: double
+		lineageTag: 259ad2b0-c393-4431-ac56-e226d86f66f7
+		summarizeBy: sum
+		sourceColumn: Qual investimento previsto para implementar?
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Qual a previsão de ganho (R$) em 12 meses?'
+		dataType: double
+		lineageTag: a9b41313-df42-4aba-b653-6521b2289619
+		summarizeBy: sum
+		sourceColumn: Qual a previsão de ganho (R$) em 12 meses?
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Faixa
+		dataType: string
+		lineageTag: 8ac1c777-c8c5-4ff6-b46c-ada963e0c020
+		summarizeBy: none
+		sourceColumn: Faixa
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Dim_Valores = m
+		mode: import
+		source =
+				let
+				    Fonte = Sql.Database("localhost", "IdeiasDemo"),
+				    Dados = Fonte{[Schema="bi", Item="vw_Dim_Valores"]}[Data]
+				in
+				    Dados
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

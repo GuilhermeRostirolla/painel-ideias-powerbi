@@ -1,0 +1,16 @@
+[project]
+name = "painel-ideias"
+version = "1.0.0"
+description = "Gerador de dados sintéticos e modelo SQL Server para o Painel de Ideias (Power BI)"
+requires-python = ">=3.12"
+
+[tool.ruff]
+line-length = 110
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "B", "UP", "SIM"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["sql: testes que exigem SQL Server local (localhost)"]

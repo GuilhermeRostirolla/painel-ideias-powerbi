@@ -1,0 +1,242 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/bookmark/2.1.0/schema.json",
+  "displayName": "Fechar · Implantadas",
+  "name": "f0d8d581a72e8857693c",
+  "options": {
+    "applyOnlyToTargetVisuals": true,
+    "targetVisualNames": [
+      "d7dc4dfc66f702efb32f",
+      "60d1aea8dd1a8c0400b9",
+      "36954f116cdaa1a5bbd2",
+      "815f6748f876b7c05361",
+      "11f58fd73e49b95dc77e",
+      "b258a8798f2ac5d6c773",
+      "8151973f76d6e4430461",
+      "44ca1998835135eb3ed0",
+      "20fbafb8437a58cc7e12",
+      "4f1a1402d547a2ff891b",
+      "17eb60e135d12873b8f9",
+      "5ae9a4f246fa7d1b0e53",
+      "f97d41e13d37ab3506ce",
+      "a7fa96bb81a00e0c5c7d",
+      "eafa95985138c3d673a5",
+      "a6c40bcedded2eb8d9d0",
+      "fc6525b6a08423fe57f4",
+      "2a755ff0423519894203",
+      "9b58a7272a6e1bd48b0f",
+      "af41c0bf01fad651a5c4",
+      "2a73410678b630e81bee",
+      "d9fda4af6b7d4986a2f2"
+    ],
+    "suppressActiveSection": true,
+    "suppressData": true
+  },
+  "explorationState": {
+    "version": "1.0",
+    "activeSection": "IA3Implantadas",
+    "sections": {
+      "IA3Implantadas": {
+        "visualContainers": {
+          "d7dc4dfc66f702efb32f": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "60d1aea8dd1a8c0400b9": {
+            "singleVisual": {
+              "visualType": "shape",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "36954f116cdaa1a5bbd2": {
+            "singleVisual": {
+              "visualType": "textbox",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "815f6748f876b7c05361": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "11f58fd73e49b95dc77e": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "b258a8798f2ac5d6c773": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "8151973f76d6e4430461": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "44ca1998835135eb3ed0": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "20fbafb8437a58cc7e12": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "4f1a1402d547a2ff891b": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "17eb60e135d12873b8f9": {
+            "singleVisual": {
+              "visualType": "shape",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "5ae9a4f246fa7d1b0e53": {
+            "singleVisual": {
+              "visualType": "textbox",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "f97d41e13d37ab3506ce": {
+            "singleVisual": {
+              "visualType": "textbox",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "a7fa96bb81a00e0c5c7d": {
+            "singleVisual": {
+              "visualType": "slicer",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "eafa95985138c3d673a5": {
+            "singleVisual": {
+              "visualType": "shape",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "a6c40bcedded2eb8d9d0": {
+            "singleVisual": {
+              "visualType": "textbox",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "fc6525b6a08423fe57f4": {
+            "singleVisual": {
+              "visualType": "textbox",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "2a755ff0423519894203": {
+            "singleVisual": {
+              "visualType": "advancedSlicerVisual",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "9b58a7272a6e1bd48b0f": {
+            "singleVisual": {
+              "visualType": "shape",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "af41c0bf01fad651a5c4": {
+            "singleVisual": {
+              "visualType": "textbox",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "2a73410678b630e81bee": {
+            "singleVisual": {
+              "visualType": "textbox",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "d9fda4af6b7d4986a2f2": {
+            "singleVisual": {
+              "visualType": "advancedSlicerVisual",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

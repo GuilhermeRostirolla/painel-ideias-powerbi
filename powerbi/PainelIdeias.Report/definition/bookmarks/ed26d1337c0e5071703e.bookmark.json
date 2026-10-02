@@ -1,0 +1,36 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/bookmark/2.1.0/schema.json",
+  "displayName": "Modo_De_Criação",
+  "name": "ed26d1337c0e5071703e",
+  "options": {
+    "targetVisualNames": [
+      "82c8b9717cbb3ce3d022"
+    ]
+  },
+  "explorationState": {
+    "version": "1.3",
+    "activeSection": "aeb0a38d42cb801694c6",
+    "sections": {
+      "aeb0a38d42cb801694c6": {
+        "visualContainers": {}
+      }
+    },
+    "objects": {
+      "merge": {
+        "outspacePane": [
+          {
+            "properties": {
+              "expanded": {
+                "expr": {
+                  "Literal": {
+                    "Value": "true"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

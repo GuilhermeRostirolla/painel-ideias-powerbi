@@ -1,0 +1,29 @@
+table Parte
+	lineageTag: 1e643b70-78b5-fe1c-dd0d-2e9cf2daf397
+
+	column Parte
+		dataType: string
+		lineageTag: 1a2a123c-9003-5b23-1e81-b91c09b5a3af
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Parte]
+		sortByColumn: Ordem
+
+		annotation SummarizationSetBy = Automatic
+
+	column Ordem
+		dataType: int64
+		formatString: 0
+		lineageTag: d594c3f0-a376-5ae3-0fcb-e895a5ac0366
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Ordem]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Parte = calculated
+		mode: import
+		source = DATATABLE ( "Parte", STRING, "Ordem", INTEGER, { { "v", 1 }, { "r", 2 } } )
+
+	annotation PBI_Id = 4421d0112cd2b035ba50b2fc586e9d04
+

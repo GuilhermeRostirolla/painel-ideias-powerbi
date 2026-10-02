@@ -1,0 +1,12 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/pagesMetadata/1.1.0/schema.json",
+  "pageOrder": [
+    "IA1Geral",
+    "IA2SLA",
+    "IA3Implantadas",
+    "IA4Financeiro",
+    "IA5Colaboradores",
+    "IA6Ideias"
+  ],
+  "activePageName": "IA1Geral"
+}

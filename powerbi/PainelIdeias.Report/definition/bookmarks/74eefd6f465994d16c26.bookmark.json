@@ -1,0 +1,227 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/bookmark/2.1.0/schema.json",
+  "displayName": "Filtro Campanha · SLA & Fluxo",
+  "name": "74eefd6f465994d16c26",
+  "options": {
+    "applyOnlyToTargetVisuals": true,
+    "targetVisualNames": [
+      "f45f57ff90a98e25d296",
+      "b890d246fadf9f91c81a",
+      "a34c0a5941ef17ffa32a",
+      "3485e1ed43a4311e8ec0",
+      "339a9657b872687e5209",
+      "13be982fbe2f811ccd9a",
+      "094f1339ad9dda32bf73",
+      "448adbc89e50bad79e00",
+      "59b02470c5ab19e1a1e1",
+      "4e70a5ba895e0383c83f",
+      "ee13c870d867c099954c",
+      "4a68398d0e2804fb1d38",
+      "1b44fa1fe79c05d06a77",
+      "853ae9bb78c7622c2896",
+      "2467f1df3be806985aa3",
+      "180518b2e50ad8a86cee",
+      "b0f20202b1584aefe3bd",
+      "375640c73efad8107bb7",
+      "30e02d4282b03dedd886",
+      "bf5f34c95b6a1da75ab1",
+      "4e739bc3159587697523",
+      "8c5f68e720f23967f4cb"
+    ],
+    "suppressActiveSection": true,
+    "suppressData": true
+  },
+  "explorationState": {
+    "version": "1.0",
+    "activeSection": "IA2SLA",
+    "sections": {
+      "IA2SLA": {
+        "visualContainers": {
+          "f45f57ff90a98e25d296": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "b890d246fadf9f91c81a": {
+            "singleVisual": {
+              "visualType": "shape",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "a34c0a5941ef17ffa32a": {
+            "singleVisual": {
+              "visualType": "textbox",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "3485e1ed43a4311e8ec0": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "339a9657b872687e5209": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "13be982fbe2f811ccd9a": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "094f1339ad9dda32bf73": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "448adbc89e50bad79e00": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "59b02470c5ab19e1a1e1": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "4e70a5ba895e0383c83f": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "objects": {}
+            }
+          },
+          "ee13c870d867c099954c": {
+            "singleVisual": {
+              "visualType": "shape",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "4a68398d0e2804fb1d38": {
+            "singleVisual": {
+              "visualType": "textbox",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "1b44fa1fe79c05d06a77": {
+            "singleVisual": {
+              "visualType": "textbox",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "853ae9bb78c7622c2896": {
+            "singleVisual": {
+              "visualType": "slicer",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "2467f1df3be806985aa3": {
+            "singleVisual": {
+              "visualType": "shape",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "180518b2e50ad8a86cee": {
+            "singleVisual": {
+              "visualType": "textbox",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "b0f20202b1584aefe3bd": {
+            "singleVisual": {
+              "visualType": "textbox",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "375640c73efad8107bb7": {
+            "singleVisual": {
+              "visualType": "advancedSlicerVisual",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "30e02d4282b03dedd886": {
+            "singleVisual": {
+              "visualType": "shape",
+              "objects": {}
+            }
+          },
+          "bf5f34c95b6a1da75ab1": {
+            "singleVisual": {
+              "visualType": "textbox",
+              "objects": {}
+            }
+          },
+          "4e739bc3159587697523": {
+            "singleVisual": {
+              "visualType": "textbox",
+              "objects": {}
+            }
+          },
+          "8c5f68e720f23967f4cb": {
+            "singleVisual": {
+              "visualType": "advancedSlicerVisual",
+              "objects": {}
+            }
+          }
+        }
+      }
+    }
+  }
+}

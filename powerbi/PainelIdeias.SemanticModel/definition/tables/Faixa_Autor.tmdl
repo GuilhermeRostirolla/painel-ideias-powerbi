@@ -1,0 +1,49 @@
+table Faixa_Autor
+	lineageTag: 6ed8ffb2-a2a9-997f-6b0c-ec1aaebf9564
+
+	column Faixa
+		dataType: string
+		lineageTag: 054c8b4a-5882-496c-e3b9-3e77252d1645
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Faixa]
+		sortByColumn: Ordem
+
+		annotation SummarizationSetBy = Automatic
+
+	column Ordem
+		dataType: int64
+		formatString: 0
+		lineageTag: b7678ae9-88ba-b7f7-f1f8-c0369d6785a8
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Ordem]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Min
+		dataType: int64
+		formatString: 0
+		lineageTag: 2dbd151b-3b18-ed33-553f-ba33c06b4e5f
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Min]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Max
+		dataType: int64
+		formatString: 0
+		lineageTag: 74f41795-9907-eaaf-8a11-44ebc5904123
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Max]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Faixa_Autor = calculated
+		mode: import
+		source = DATATABLE ( "Faixa", STRING, "Ordem", INTEGER, "Min", INTEGER, "Max", INTEGER, { { "1 ideia", 1, 1, 1 }, { "2–3", 2, 2, 3 }, { "4–9", 3, 4, 9 }, { "10+", 4, 10, 999999 } } )
+
+	annotation PBI_Id = d1745ee8b7d369fe9b3d27ef79d44f31
+

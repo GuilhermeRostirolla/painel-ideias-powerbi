@@ -1,0 +1,90 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/bookmark/2.1.0/schema.json",
+  "displayName": "Ordem · mais tempo na etapa",
+  "name": "ef692d94f2dfe458d0b1",
+  "options": {
+    "applyOnlyToTargetVisuals": true,
+    "targetVisualNames": [
+      "9ca67f3c9c6a2ff755fc",
+      "d6facaa957b44eb3be75",
+      "e3219af9199b3e707aea",
+      "15b8e14d4e8d3f00ff40",
+      "19d865d220398c486c80",
+      "e7d3c2d4c1016a5008ce",
+      "6dfc065a4874453351ec",
+      "b17a2adea6c4e9201b24"
+    ],
+    "suppressActiveSection": true,
+    "suppressData": true
+  },
+  "explorationState": {
+    "version": "1.0",
+    "activeSection": "IA6Ideias",
+    "sections": {
+      "IA6Ideias": {
+        "visualContainers": {
+          "9ca67f3c9c6a2ff755fc": {
+            "singleVisual": {
+              "visualType": "tableEx",
+              "objects": {}
+            }
+          },
+          "d6facaa957b44eb3be75": {
+            "singleVisual": {
+              "visualType": "cardVisual",
+              "objects": {}
+            }
+          },
+          "e3219af9199b3e707aea": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "objects": {}
+            }
+          },
+          "15b8e14d4e8d3f00ff40": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "objects": {}
+            }
+          },
+          "19d865d220398c486c80": {
+            "singleVisual": {
+              "visualType": "tableEx",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "e7d3c2d4c1016a5008ce": {
+            "singleVisual": {
+              "visualType": "cardVisual",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "6dfc065a4874453351ec": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "b17a2adea6c4e9201b24": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

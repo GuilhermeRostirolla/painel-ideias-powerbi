@@ -1,0 +1,32 @@
+table Dim_Tema
+	lineageTag: 4f852cfc-7108-4a4c-b71f-12125d80125f
+
+	column ID_Tema
+		dataType: string
+		lineageTag: 7a96f27a-cbe7-43d9-b828-09d224ef6906
+		summarizeBy: none
+		sourceColumn: ID_Tema
+
+		annotation SummarizationSetBy = Automatic
+
+	column Nome_tema
+		dataType: string
+		lineageTag: b78e4bc8-0ddb-4c54-b58d-4e9a0a47f22f
+		summarizeBy: none
+		sourceColumn: Nome_tema
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Dim_Tema = m
+		mode: import
+		source =
+				let
+				    Fonte = Sql.Database("localhost", "IdeiasDemo"),
+				    Dados = Fonte{[Schema="bi", Item="vw_Dim_Tema"]}[Data]
+				in
+				    Dados
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

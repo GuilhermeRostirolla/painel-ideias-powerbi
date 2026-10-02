@@ -1,0 +1,72 @@
+relationship AutoDetected_6e43fbfb-f8be-422d-a73b-07af2d7c3a22
+	crossFilteringBehavior: bothDirections
+	fromColumn: Fato_Ideias.ID_Estado
+	toColumn: Dim_Estado.Id_Estado
+
+relationship AutoDetected_91c9c2b9-eef8-4b73-b2f4-af72f0ef3abd
+	fromColumn: Fato_Ideias.ID_Tema
+	toColumn: Dim_Tema.ID_Tema
+
+relationship AutoDetected_33e0eb1d-d384-489f-9211-270b87b9a7f3
+	crossFilteringBehavior: bothDirections
+	fromCardinality: one
+	fromColumn: Dim_Valores.Chave_Primaria
+	toColumn: Fato_Ideias.Chave_Primaria
+
+relationship AutoDetected_b881756b-4c6b-4ef4-94ea-9ce387580bcc
+	crossFilteringBehavior: bothDirections
+	fromColumn: Dim_SLA_Ideias.Chave_Primaria
+	toColumn: Fato_Ideias.Chave_Primaria
+
+relationship 4333cc6b-525b-969a-3cdc-08cb9768b2a3
+	crossFilteringBehavior: bothDirections
+	fromColumn: Dim_Colaboradores.Chave_Primaria
+	toColumn: Fato_Ideias.Chave_Primaria
+
+relationship 0411f0b5-fcf3-9bf4-fb2d-6d8b1b78e6d6
+	crossFilteringBehavior: bothDirections
+	fromCardinality: one
+	fromColumn: Dim_Data.'resultado.Id'
+	toColumn: Fato_Ideias.Chave_Primaria
+
+relationship AutoDetected_9ef50cea-5cd6-4d6f-9de7-fbb974322f7e
+	crossFilteringBehavior: bothDirections
+	fromColumn: Fato_Ideias.ID_Campanha
+	toColumn: Dim_Empresa_Campanha.ID_Campanha
+
+relationship 4c51c0ad-ae27-cc24-0f0f-3a6f2ccaabb6
+	crossFilteringBehavior: bothDirections
+	fromColumn: Dim_Ganhos_Indiretos.Primaria_Key
+	toColumn: Fato_Ideias.Chave_Primaria
+
+relationship 4369902c-89e5-c863-ad57-b3af139b2096
+	crossFilteringBehavior: bothDirections
+	fromCardinality: one
+	fromColumn: Dim_Elaborador.Chave_Primaria
+	toColumn: Fato_Ideias.Chave_Primaria
+
+relationship bf835163-2a05-36c0-46a2-16547479dd3a
+	crossFilteringBehavior: bothDirections
+	toCardinality: many
+	fromColumn: Planilha.Funcionário
+	toColumn: Dim_Colaboradores.Nome_Colaborador
+
+relationship 174f6934-5796-d76c-1b0a-6e3bb024c285
+	fromColumn: Dim_Data.Data_de_Criacao
+	toColumn: dCalendario.Date
+
+relationship 94340fa9-093a-5311-3d47-677189ffafbd
+	isActive: false
+	fromColumn: Dim_Data.Data_Aprovaca_Final
+	toColumn: dCalendario.Date
+
+relationship 59c18b8a-420d-d6e7-f254-7ba75b83173b
+	isActive: false
+	fromColumn: Dim_SLA_Ideias.Data_de_Entrada
+	toColumn: dCalendario.Date
+
+relationship be67bbea-8cde-1864-eed3-7735f6ac6ea5
+	isActive: false
+	fromColumn: Fato_Ideias.Data_Implantadas
+	toColumn: dCalendario.Date
+

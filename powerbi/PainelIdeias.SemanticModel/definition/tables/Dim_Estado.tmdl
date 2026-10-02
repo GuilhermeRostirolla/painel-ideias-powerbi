@@ -1,0 +1,48 @@
+table Dim_Estado
+	lineageTag: 91b279ab-d32c-4fb7-9f2e-668c8dc4f001
+
+	column Id_Estado
+		dataType: string
+		lineageTag: 18e74fc7-2970-46fa-ae97-4d11ce441912
+		summarizeBy: none
+		sourceColumn: Id_Estado
+
+		annotation SummarizationSetBy = Automatic
+
+	column Estados
+		dataType: string
+		lineageTag: f9515af7-059c-44d2-9622-ea4474a03025
+		summarizeBy: none
+		sourceColumn: Estados
+
+		annotation SummarizationSetBy = Automatic
+
+	column Resumo_Estados
+		dataType: string
+		lineageTag: dd6717a8-1eb4-45b6-89cc-92dd65175a10
+		summarizeBy: none
+		sourceColumn: Resumo_Estados
+
+		annotation SummarizationSetBy = Automatic
+
+	column Personalizar
+		dataType: string
+		lineageTag: 7a1e7125-2d35-41df-a383-be1b7bfeb51d
+		summarizeBy: none
+		sourceColumn: Personalizar
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Dim_Estado = m
+		mode: import
+		source =
+				let
+				    Fonte = Sql.Database("localhost", "IdeiasDemo"),
+				    Dados = Fonte{[Schema="bi", Item="vw_Dim_Estado"]}[Data]
+				in
+				    Dados
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

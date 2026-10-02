@@ -1,0 +1,14 @@
+expression RangeStart = #datetime(2024, 1, 1, 0, 0, 0) meta [IsParameterQuery=true, Type="DateTime", IsParameterQueryRequired=true]
+	lineageTag: 64e06a45-f241-4bc5-addf-0c2c4dcf0b76
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = DateTime
+
+expression RangeEnd = #datetime(2026, 8, 6, 0, 0, 0) meta [IsParameterQuery=true, Type="DateTime", IsParameterQueryRequired=true]
+	lineageTag: 6c5b66f9-6c5b-4115-987a-5fce207bbe0c
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = DateTime
+
