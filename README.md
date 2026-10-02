@@ -1,8 +1,23 @@
 # Painel de Ideias · Python + SQL Server + Power BI
 
-Dashboard de um programa de ideias e melhoria contínua: do cadastro da ideia até a implantação, com SLA por etapa, retorno financeiro e engajamento das pessoas.
+Dashboard de gestão de um **programa de ideias e melhoria contínua**, o tipo de programa em que os colaboradores sugerem melhorias para o próprio trabalho. O painel acompanha cada ideia do cadastro até a implantação, passando por **Avaliação → Proposta de Solução → Aprovada → Em Implantação → Validação → Implantada**, e também as reprovadas, as canceladas e as que voltam para o banco de ideias.
 
-**Todos os dados são 100% fictícios.** Pessoas, empresas, títulos, datas e valores são gerados por um simulador em Python. Nenhum dado real é usado.
+### Perguntas que o painel responde
+
+- **Volume e conversão:** quantas ideias entram por mês, quantas viram implantação e qual a taxa de aprovação.
+- **Prazo (SLA):** quanto tempo cada ideia fica em cada etapa, quais estão acima do SLA e quais estão paradas há mais de 60 dias.
+- **Fluxo:** quais mudanças de status aconteceram no mês e quais ideias andaram, travaram ou voltaram.
+- **Retorno financeiro:** quanto está previsto para investir, quanto já foi investido e qual o ganho estimado em 12 meses, por empresa e por status.
+- **Engajamento:** quantos colaboradores participam, quem mais contribui e como cada empresa está em relação à meta.
+- **Detalhe:** a lista completa das ideias de cada etapa, com autor, empresa, tema e dias na etapa.
+
+### O cenário simulado
+
+- **872 ideias** de **6 empresas** e cerca de **2.200 colaboradores**, de jan/2024 a set/2026.
+- Metas definidas: **SLA geral de 60 dias**, SLA por etapa (Avaliação 15 d, Proposta 45 d, Aprovada 30 d, Em Implantação 90 d, Validação 20 d), **50% de engajamento** e **15% de conversão** em implantação.
+- Filtros por período, empresa e campanha em todas as páginas.
+
+**Todos os dados são 100% fictícios.** Pessoas, empresas, títulos, datas e valores são gerados por um simulador em Python, que reproduz o comportamento de um programa real: durações variáveis por etapa, retrabalho, reprovações, cancelamentos e perfil financeiro próprio de cada empresa. Nenhum dado real é usado.
 
 ![Visão Geral](docs/img/visao_geral.png)
 
