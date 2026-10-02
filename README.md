@@ -86,8 +86,8 @@ tests/     testes automatizados
   <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python">
   <img src="https://img.shields.io/badge/pandas-150458?style=for-the-badge&logo=pandas&logoColor=white" alt="pandas">
   <img src="https://img.shields.io/badge/NumPy-013243?style=for-the-badge&logo=numpy&logoColor=white" alt="NumPy">
-  <img src="https://img.shields.io/badge/SQL%20Server-CC2927?style=for-the-badge&logo=microsoftsqlserver&logoColor=white" alt="SQL Server">
-  <img src="https://img.shields.io/badge/Power%20BI-F2C811?style=for-the-badge&logo=powerbi&logoColor=black" alt="Power BI">
+  <img src="https://img.shields.io/badge/SQL%20Server-CC2927?style=for-the-badge&logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0id2hpdGUiPjxlbGxpcHNlIGN4PSIxMiIgY3k9IjUiIHJ4PSI4IiByeT0iMyIvPjxwYXRoIGQ9Ik00IDd2NGMwIDEuNyAzLjYgMyA4IDNzOC0xLjMgOC0zVjdjMCAxLjctMy42IDMtOCAzUzQgOC43IDQgN3ptMCA2djRjMCAxLjcgMy42IDMgOCAzczgtMS4zIDgtM3YtNGMwIDEuNy0zLjYgMy04IDNzLTgtMS4zLTgtM3oiLz48L3N2Zz4%3D" alt="SQL Server">
+  <img src="https://img.shields.io/badge/Power%20BI-F2C811?style=for-the-badge&logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iYmxhY2siPjxyZWN0IHg9IjMiIHk9IjEyIiB3aWR0aD0iNCIgaGVpZ2h0PSI5IiByeD0iMSIvPjxyZWN0IHg9IjEwIiB5PSI3IiB3aWR0aD0iNCIgaGVpZ2h0PSIxNCIgcng9IjEiLz48cmVjdCB4PSIxNyIgeT0iMyIgd2lkdGg9IjQiIGhlaWdodD0iMTgiIHJ4PSIxIi8%2BPC9zdmc%2B" alt="Power BI">
   <img src="https://img.shields.io/badge/DAX-1F4E5F?style=for-the-badge" alt="DAX">
   <img src="https://img.shields.io/badge/Power%20Query-2F7A8C?style=for-the-badge" alt="Power Query">
 </p>
