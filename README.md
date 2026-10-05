@@ -74,11 +74,6 @@ Python (simulador)  ──▶  SQL Server · schema dw (star schema)  ──▶ 
 | **Segurança por linha (RLS) por empresa** | Cada empresa tem seu próprio papel de segurança, que filtra as ideias, os colaboradores e o quadro de funcionários daquela empresa. No Power BI Service, basta atribuir as pessoas ao papel da empresa delas. Testado com "Exibir como". |
 | **Modelo enxuto** | Tabelas, colunas e medidas sem uso foram removidas. O modelo tem 240 medidas, todas validadas contra o banco. |
 
-### Próximos passos
-
-- Atualização incremental e publicação no Power BI Service com atualização agendada.
-- Alertas automáticos quando uma ideia passa do SLA da etapa.
-
 ## Como foi construído
 
 Projeto desenvolvido por mim com apoio de IA (Claude) como assistente de programação. A ideia, o desenho do processo, as regras de negócio, as metas, o layout do painel e a revisão de cada entrega são meus; a IA acelerou a escrita de código, os testes e as verificações.
