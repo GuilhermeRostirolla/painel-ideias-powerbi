@@ -61,28 +61,6 @@ Python (simulador)  ──▶  SQL Server · schema dw (star schema)  ──▶ 
 |---|---|
 | ![Implantadas](docs/img/implantadas.png) | ![Colaboradores](docs/img/colaboradores.png) |
 
-![Detalhe das Ideias](docs/img/detalhe.png)
-
-**Segurança por empresa (RLS): painel visto como a empresa Litoral**
-
-![RLS por empresa](docs/img/rls_litoral.png)
-
-## Modelo e código
-
-![Modelo no Power BI](docs/img/modelo_powerbi.png)
-
-| Simulação em Python | Consulta no SQL Server |
-|---|---|
-| ![Python](docs/img/python_fluxo.png) | ![SQL](docs/img/sql_consulta.png) |
-
-## Destaques
-
-- **Simulação realista:** durações por etapa em distribuição lognormal, probabilidades de transição calibradas e perfil financeiro próprio por empresa (retorno e execução do orçamento).
-- **Reprodutível:** a mesma `--semente` gera exatamente o mesmo banco; a data de referência fica gravada em `dw.meta_carga`, então o painel não depende de `TODAY()`.
-- **Qualidade de dados:** validações em Python bloqueiam a carga se algo estiver incoerente, e `sql/04_checks.sql` confere o resultado no banco.
-- **Metas definidas:** SLA geral de 60 dias, SLA por etapa, meta de engajamento de 50% e de conversão de 15%.
-- **Testes:** 58 testes com `pytest` e lint com `ruff`.
-
 ## Decisões que tomei
 
 | Decisão | Por quê |
