@@ -75,8 +75,8 @@ def main(argv: list[str] | None = None) -> int:
     eng = banco.criar_engine(a.servidor, a.banco)
     banco.executar_script(eng, SQL / "01_schema.sql")
     banco.gravar(eng, tabelas)
-    banco.executar_script(eng, SQL / "03_views_compat.sql")
-    falhas = banco.rodar_checks(eng, SQL / "04_checks.sql")
+    banco.executar_script(eng, SQL / "02_views_bi.sql")
+    falhas = banco.rodar_checks(eng, SQL / "03_checks.sql")
     if falhas:
         print("CHECKS SQL FALHARAM: " + ", ".join(falhas))
         return 1
