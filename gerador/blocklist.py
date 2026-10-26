@@ -20,7 +20,8 @@ def hash_texto(texto: str) -> str:
 def carregar(caminho: Path = CAMINHO_BLOCKLIST) -> frozenset[str]:
     if not caminho.exists():
         raise FileNotFoundError(
-            f"arquivo de hashes ausente: {caminho}. Rode tools/extrair_referencias.ps1"
+            f"arquivo de hashes ausente: {caminho}. Gere com tools/hashes.py (nomes e títulos reais pela "
+            "entrada padrão, um por linha) ou rode com --sem-blocklist"
         )
     return frozenset(linha.strip() for linha in caminho.read_text().splitlines() if linha.strip())
 
