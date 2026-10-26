@@ -17,8 +17,8 @@ def test_carga_completa_views_e_checks():
     try:
         banco.executar_script(eng, SQL / "01_schema.sql")
         banco.gravar(eng, tabelas)
-        banco.executar_script(eng, SQL / "03_views_compat.sql")
-        assert banco.rodar_checks(eng, SQL / "04_checks.sql") == []
+        banco.executar_script(eng, SQL / "02_views_bi.sql")
+        assert banco.rodar_checks(eng, SQL / "03_checks.sql") == []
         with eng.connect() as c:
             n = c.execute(text("SELECT COUNT(*) FROM bi.vw_Fato_Ideias")).scalar()
             cols = [r[0] for r in c.execute(text(

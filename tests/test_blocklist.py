@@ -22,5 +22,5 @@ def test_carregar_e_bloqueado(tmp_path: Path):
 
 
 def test_carregar_ausente_da_erro_claro(tmp_path: Path):
-    with pytest.raises(FileNotFoundError, match="extrair_referencias"):
+    with pytest.raises(FileNotFoundError, match="hashes.py"):
         carregar(tmp_path / "nao_existe")

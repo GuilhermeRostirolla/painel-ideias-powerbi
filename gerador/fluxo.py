@@ -4,9 +4,13 @@ from math import log
 import numpy as np
 import pandas as pd
 
+from gerador.catalogos import AVALIACAO, BANCO_DE_IDEIAS, CANCELADA, IMPLANTADA, REPROVADA
 from gerador.config import Parametros
 
-_TERMINAIS_FIXOS = (6, 9)
+# Implantada e Cancelada encerram a ideia. Reprovada também é terminal no painel (dim_etapa.terminal),
+# mas no simulador uma ideia reprovada pode ser reaberta (o autor recorre) com probabilidade p.prob_reabrir.
+_TERMINAIS_FIXOS = (IMPLANTADA, CANCELADA)
+_PROB_INICIAR_NO_BANCO = 0.10  # parte das ideias entra direto no Banco de Ideias, sem avaliação
 _MAX_PASSOS = 40
 _MAX_DIAS_ETAPA = 365
 
@@ -22,11 +26,11 @@ def _proxima(rng: np.random.Generator, destinos: dict[int, float]) -> int:
 
 def simular_ideia(rng: np.random.Generator, criacao: date,
                   p: Parametros) -> list[tuple[int, date, date | None]]:
-    etapa = 7 if rng.random() < 0.10 else 1
+    etapa = BANCO_DE_IDEIAS if rng.random() < _PROB_INICIAR_NO_BANCO else AVALIACAO
     entrada = criacao
     movs: list[tuple[int, date, date | None]] = []
     for _ in range(_MAX_PASSOS):
-        encerra = etapa in _TERMINAIS_FIXOS or (etapa == 8 and rng.random() >= p.prob_reabrir)
+        encerra = etapa in _TERMINAIS_FIXOS or (etapa == REPROVADA and rng.random() >= p.prob_reabrir)
         if encerra:
             break
         saida = entrada + timedelta(days=_duracao(rng, p.mediana_dias[etapa], p.sigma))
