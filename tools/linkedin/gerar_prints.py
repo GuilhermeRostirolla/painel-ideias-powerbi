@@ -8,7 +8,7 @@ from pygments import highlight
 from pygments.formatters import ImageFormatter
 from pygments.lexers import PythonLexer, SqlLexer, TextLexer
 
-RAIZ = Path(__file__).resolve().parents[1]
+RAIZ = Path(__file__).resolve().parents[2]
 SAIDA = RAIZ / "saida" / "linkedin"
 FONTE_CODIGO = "Consolas"
 FONTE_TITULO = r"C:\Windows\Fonts\segoeui.ttf"
@@ -30,7 +30,7 @@ TRECHOS = [
      "SQL Server · tabela fato com chaves, constraints nomeadas e regras CHECK"),
     ("07_sql_indices.png", "sql/01_schema.sql", "CREATE INDEX", 15,
      "SQL Server · índice em todas as chaves estrangeiras"),
-    ("08_sql_views.png", "sql/03_views_compat.sql", "CREATE VIEW bi.vw_Dim_SLA_Ideias", 23,
+    ("08_sql_views.png", "sql/02_views_bi.sql", "CREATE VIEW bi.vw_Dim_SLA_Ideias", 23,
      "SQL Server · views do schema bi consumidas pelo Power BI"),
     ("09_sql_dimensoes.png", "sql/01_schema.sql", "CREATE TABLE dw.dim_unidade", 21,
      "SQL Server · dimensões do star schema (schema dw)"),

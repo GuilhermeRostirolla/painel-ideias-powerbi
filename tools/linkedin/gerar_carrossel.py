@@ -2,7 +2,7 @@ from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
-RAIZ = Path(__file__).resolve().parents[1]
+RAIZ = Path(__file__).resolve().parents[2]
 ORIGEM = RAIZ / "saida" / "linkedin"
 SAIDA = ORIGEM / "carrossel"
 W, H, M = 1080, 1350, 56
