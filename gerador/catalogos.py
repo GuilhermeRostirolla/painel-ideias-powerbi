@@ -26,6 +26,13 @@ ETAPAS = (
     Etapa(9, "Cancelada", "Cancelada", True),
 )
 
+_ID_ETAPA = {e.resumo: e.id for e in ETAPAS}
+AVALIACAO = _ID_ETAPA["Avaliação"]
+IMPLANTADA = _ID_ETAPA["Implantada"]
+BANCO_DE_IDEIAS = _ID_ETAPA["Banco de Ideias"]
+REPROVADA = _ID_ETAPA["Reprovada"]
+CANCELADA = _ID_ETAPA["Cancelada"]
+
 N_EMPRESAS = 6
 _RADICAIS = ("Horizonte", "Aurora", "Atlântica", "Primavera", "Cristal", "Pioneira",
              "Estrela", "Litoral", "Planalto", "Girassol", "Alvorada", "Ventura",
