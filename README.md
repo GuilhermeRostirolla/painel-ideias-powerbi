@@ -1,5 +1,6 @@
 # Painel de Ideias · Python + SQL Server + Power BI
 
+[![testes](https://github.com/GuilhermeRostirolla/painel-ideias-powerbi/actions/workflows/testes.yml/badge.svg)](https://github.com/GuilhermeRostirolla/painel-ideias-powerbi/actions/workflows/testes.yml)
 [English version](README.en.md)
 
 > **Toda empresa tem pessoas com boas ideias. Poucas sabem o que acontece com elas depois que são enviadas.**
@@ -37,6 +38,8 @@ Este painel é inspirado em um projeto real de programa de ideias. Ideias de col
 
 O simulador não sorteia números soltos. Ele reproduz o comportamento de um programa real: cada ideia percorre as etapas como uma máquina de estados, com tempo variável em cada uma, retrabalho, reprovações e cancelamentos. Cada empresa tem seu próprio perfil de retorno financeiro. O resultado é um painel com cara de dado real e **nenhum dado real** dentro dele.
 
+**Garantia de que nenhum nome real escapa.** Nomes e títulos fictícios gerados pelo simulador poderiam, por acaso, coincidir com os de pessoas reais. Por isso o gerador confere cada nome e cada título contra uma lista de bloqueio guardada só como **hashes SHA-256**, fora do repositório e fora do Git (`gerador/blocklist.py`). Se houver coincidência, a carga para. A lista nunca contém o texto original, então nem o código nem o histórico expõem dado real. O `tools/varredura.py` faz a mesma checagem nos arquivos do projeto antes de publicar.
+
 ## Arquitetura
 
 ```
@@ -72,7 +75,7 @@ Python (simulador)  ──▶  SQL Server · schema dw (star schema)  ──▶ 
 | **Metas e SLA explícitos** | Sem meta, o painel só descreve. Com SLA por etapa e metas de engajamento e conversão, ele aponta onde agir. |
 | **Projeto em PBIP (TMDL + PBIR) em vez de `.pbix`** | O modelo e o relatório viram texto: versionados no Git, revisáveis linha a linha e automatizáveis por script. |
 | **Segurança por linha (RLS) por empresa** | Cada empresa tem seu próprio papel de segurança, que filtra as ideias, os colaboradores e o quadro de funcionários daquela empresa. No Power BI Service, basta atribuir as pessoas ao papel da empresa delas. Testado com "Exibir como". |
-| **Modelo enxuto** | Tabelas, colunas e medidas sem uso foram removidas. O modelo tem 240 medidas, todas validadas contra o banco. |
+| **Modelo enxuto** | Tabelas, colunas e medidas sem uso foram removidas. O modelo tem 240 medidas, todas validadas contra o banco; 165 delas são auxiliares de formatação dos visuais (cores, rótulos e espaçadores). |
 
 ## Como rodar
 
@@ -85,7 +88,7 @@ pip install -r requirements.txt -r requirements-dev.txt
 python -m gerador.main --sem-blocklist --semente 501844422 --data-referencia 2026-09-30
 ```
 
-O comando cria o banco `IdeiasDemo`, roda `sql/01_schema.sql`, grava os dados, cria as views de `sql/03_views_compat.sql` e executa as checagens. Depois rode `python tools/religar_pbip.py --rls` para criar um papel de segurança por empresa, abra `powerbi/PainelIdeias.pbip` no Power BI Desktop e clique em **Atualizar**.
+O comando cria o banco `IdeiasDemo`, roda `sql/01_schema.sql`, grava os dados, cria as views de `sql/02_views_bi.sql` e executa as checagens. Depois rode `python tools/religar_pbip.py --rls` para criar um papel de segurança por empresa, abra `powerbi/PainelIdeias.pbip` no Power BI Desktop e clique em **Atualizar**.
 
 Opções: `--servidor` (padrão `localhost`), `--banco` (padrão `IdeiasDemo`), `--semente` e `--data-referencia` (padrão: aleatória e hoje).
 
@@ -96,7 +99,7 @@ pytest
 ruff check .
 ```
 
-Os testes marcados com `sql` exigem o SQL Server local.
+Os testes marcados com `sql` exigem o SQL Server local. Os demais e o `ruff` rodam no GitHub Actions a cada push e pull request (`pytest -m "not sql"`).
 
 ## Estrutura
 
@@ -104,7 +107,8 @@ Os testes marcados com `sql` exigem o SQL Server local.
 gerador/   simulador e carga (catálogos, pessoas, fluxo, ideias, valores, validação, banco)
 sql/       schema dw + views bi + checagens
 powerbi/   projeto Power BI (PBIP)
-tools/     religação do PBIP às views, tema visual e geração de imagens
+tools/     religação do PBIP às views, tema visual, varredura de nomes e capturas
+tools/linkedin/  geração das imagens e do carrossel de divulgação
 tests/     testes automatizados
 ```
 
@@ -119,3 +123,7 @@ tests/     testes automatizados
   <img src="https://img.shields.io/badge/DAX-1F4E5F?style=for-the-badge" alt="DAX">
   <img src="https://img.shields.io/badge/Power%20Query-2F7A8C?style=for-the-badge" alt="Power Query">
 </p>
+
+## Licença
+
+[MIT](LICENSE)
